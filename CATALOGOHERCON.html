@@ -133,22 +133,24 @@
             min-height: 32px;
         }
 
+        /* Escala de precios en VERTICAL */
         .price-scale {
-            font-size: 0.55rem;
+            font-size: 0.6rem;
             background: #f1f0ea;
-            padding: 5px;
+            padding: 6px;
             border-radius: 6px;
             margin-bottom: 8px;
-            line-height: 1.4;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
         }
 
-        .price-scale .price-item {
-            display: inline-block;
+        .price-item {
+            display: block;
             background: white;
-            padding: 2px 4px;
+            padding: 3px 5px;
             border-radius: 4px;
-            margin: 1px;
-            font-size: 0.55rem;
+            font-size: 0.6rem;
             font-weight: 500;
         }
 
@@ -386,7 +388,7 @@
 </div>
 
 <div class="category-bar" id="categoryBar"></div>
-<div class="products-grid" id="productsGrid"><div class="loading">Cargando productos...</div></div>
+<div class="products-grid" id="productsGrid"><div class="loading">🔄 Cargando productos...</div></div>
 
 <div class="cart-fab" id="cartFab">
     <span>🛒</span>
@@ -411,49 +413,52 @@
 
 <script>
     // ============================================================
-    // CONFIGURACIÓN - URL del CSV en GitHub
+    // VERSIÓN 3.0 - FORZAR ACTUALIZACIÓN
     // ============================================================
-    const CSV_URL = "https://raw.githubusercontent.com/josemanuel151/catalogoHERCON/main/base_de_precios.csv";
-    // ============================================================
-
+    const CSV_URL = "https://raw.githubusercontent.com/josemanuel151/catalogoHERCON/main/base_de_precios.csv?v=" + Date.now();
+    
     let productos = [];
     let carrito = [];
 
-    // Función para formatear precio con 2 decimales
     function formatearPrecio(precio) {
         return precio.toFixed(2);
     }
 
-    // Función para formatear el texto del rango
-    function formatearRango(rangoStr) {
-        if (!rangoStr) return "";
-        rangoStr = rangoStr.trim();
+    // Función para limpiar y extraer el rango correctamente
+    function extraerRango(texto) {
+        if (!texto) return null;
         
-        // Reemplazar caracteres especiales
-        rangoStr = rangoStr.replace(/mįs/g, 'más');
+        // Limpiar texto
+        let limpio = texto.trim().toLowerCase();
         
-        // Si contiene "ó más" o "o más"
-        if (rangoStr.includes("ó más") || rangoStr.includes("o más")) {
-            const num = rangoStr.match(/\d+/);
-            if (num) return `${num[0]} o más`;
-        }
-        
-        // Si contiene "a"
-        if (rangoStr.includes("a")) {
-            const nums = rangoStr.match(/\d+/g);
-            if (nums && nums.length >= 2) {
-                return `${nums[0]} a ${nums[1]}`;
+        // Caso 1: "1 a 11"
+        if (limpio.includes('a')) {
+            let numeros = limpio.match(/\d+/g);
+            if (numeros && numeros.length >= 2) {
+                return { min: parseInt(numeros[0]), max: parseInt(numeros[1]), texto: `${numeros[0]} a ${numeros[1]}` };
             }
         }
         
-        // Si es solo un número
-        const soloNum = rangoStr.match(/\d+/);
-        if (soloNum) return soloNum[0];
+        // Caso 2: "12 o más" o "12 o mįs"
+        if (limpio.includes('más') || limpio.includes('mįs')) {
+            let numero = limpio.match(/\d+/);
+            if (numero) {
+                let min = parseInt(numero[0]);
+                return { min: min, max: 99999, texto: `${min} o más` };
+            }
+        }
         
-        return rangoStr;
+        // Caso 3: solo un número
+        let soloNumero = limpio.match(/\d+/);
+        if (soloNumero) {
+            let num = parseInt(soloNumero[0]);
+            return { min: num, max: num, texto: `${num} pieza` };
+        }
+        
+        return null;
     }
 
-    // Función mejorada para parsear CSV
+    // Parsear CSV correctamente
     function parseCSV(csvText) {
         const lineas = csvText.split(/\r?\n/).filter(l => l.trim() !== "");
         if (lineas.length < 2) return [];
@@ -464,7 +469,7 @@
             const linea = lineas[i];
             if (linea.trim() === "") continue;
             
-            // Parseo manual respetando comillas
+            // Dividir por comas respetando comillas
             const valores = [];
             let temp = "";
             let enComillas = false;
@@ -481,86 +486,76 @@
             }
             valores.push(temp.trim());
             
-            if (valores.length < 8) continue;
+            if (valores.length < 6) continue;
             
             const categoria = valores[0].replace(/^"|"$/g, '');
             const imagen = valores[1];
             const codigo = valores[2];
-            let nombre = valores[3].replace(/^"|"$/g, '');
-            nombre = nombre.replace(/^\s+|\s+$/g, '');
+            let nombre = valores[3].replace(/^"|"$/g, '').trim();
             
-            // Extraer precios - usando las columnas correctas del CSV
-            // Columnas: Cantidad, Precio, Cantidad 2, Precio 2, Cantidad 3, Precio 3
-            const precios = [];
+            // Extraer precios de las columnas: (Cantidad, Precio), (Cantidad 2, Precio 2), (Cantidad 3, Precio 3)
+            const preciosArray = [];
             
-            // Escala 1 (columnas 5 y 6: Cantidad, Precio)
+            // Escala 1: columnas 5 y 6 (índices 5 y 6)
             let rango1 = valores[5] ? valores[5].replace(/^"|"$/g, '').trim() : "";
             let precio1 = valores[6] ? parseFloat(valores[6].replace(/^"|"$/g, '').trim()) : null;
             if (rango1 && rango1 !== "" && precio1 !== null && !isNaN(precio1)) {
-                precios.push({ rangoOriginal: rango1, precio: precio1 });
+                let rangoInfo = extraerRango(rango1);
+                if (rangoInfo) {
+                    preciosArray.push({
+                        min: rangoInfo.min,
+                        max: rangoInfo.max,
+                        precio: precio1,
+                        texto: rangoInfo.texto
+                    });
+                }
             }
             
-            // Escala 2 (columnas 7 y 8: Cantidad 2, Precio 2)
+            // Escala 2: columnas 7 y 8 (índices 7 y 8)
             let rango2 = valores[7] ? valores[7].replace(/^"|"$/g, '').trim() : "";
             let precio2 = valores[8] ? parseFloat(valores[8].replace(/^"|"$/g, '').trim()) : null;
             if (rango2 && rango2 !== "" && precio2 !== null && !isNaN(precio2)) {
-                precios.push({ rangoOriginal: rango2, precio: precio2 });
+                let rangoInfo = extraerRango(rango2);
+                if (rangoInfo) {
+                    preciosArray.push({
+                        min: rangoInfo.min,
+                        max: rangoInfo.max,
+                        precio: precio2,
+                        texto: rangoInfo.texto
+                    });
+                }
             }
             
-            // Escala 3 (columnas 9 y 10: Cantidad 3, Precio 3)
+            // Escala 3: columnas 9 y 10 (índices 9 y 10)
             let rango3 = valores[9] ? valores[9].replace(/^"|"$/g, '').trim() : "";
             let precio3 = valores[10] ? parseFloat(valores[10].replace(/^"|"$/g, '').trim()) : null;
             if (rango3 && rango3 !== "" && precio3 !== null && !isNaN(precio3)) {
-                precios.push({ rangoOriginal: rango3, precio: precio3 });
-            }
-            
-            if (precios.length === 0) continue;
-            
-            // Procesar cada precio para obtener min y max
-            const preciosProcesados = [];
-            for (let p of precios) {
-                let min = 1, max = 999;
-                const rangoLimpio = p.rangoOriginal.toLowerCase();
-                
-                if (rangoLimpio.includes("ó más") || rangoLimpio.includes("o más") || rangoLimpio.includes("o mįs")) {
-                    const match = rangoLimpio.match(/(\d+)/);
-                    min = match ? parseInt(match[1]) : 1;
-                    max = 999;
-                } else if (rangoLimpio.includes("a")) {
-                    const nums = rangoLimpio.match(/\d+/g);
-                    if (nums && nums.length >= 2) {
-                        min = parseInt(nums[0]);
-                        max = parseInt(nums[1]);
-                    }
-                } else {
-                    const soloNum = rangoLimpio.replace(/[^0-9]/g, '');
-                    if (soloNum) {
-                        min = parseInt(soloNum);
-                        max = min;
-                    }
+                let rangoInfo = extraerRango(rango3);
+                if (rangoInfo) {
+                    preciosArray.push({
+                        min: rangoInfo.min,
+                        max: rangoInfo.max,
+                        precio: precio3,
+                        texto: rangoInfo.texto
+                    });
                 }
-                
-                preciosProcesados.push({
-                    min: min,
-                    max: max,
-                    precio: p.precio,
-                    textoMostrar: formatearRango(p.rangoOriginal)
-                });
             }
+            
+            if (preciosArray.length === 0) continue;
             
             // Ordenar por cantidad mínima
-            preciosProcesados.sort((a,b) => a.min - b.min);
+            preciosArray.sort((a,b) => a.min - b.min);
             
             productosTemp.push({
-                categoria,
-                codigo,
+                categoria: categoria,
+                codigo: codigo,
                 nombre: nombre.length > 45 ? nombre.substring(0, 45) + '…' : nombre,
                 imagen: imagen && imagen.startsWith('http') ? imagen : "https://placehold.co/200x150?text=Sin+Imagen",
-                precios: preciosProcesados
+                precios: preciosArray
             });
         }
         
-        console.log(`✅ Parseados ${productosTemp.length} productos`);
+        console.log(`✅ Productos cargados: ${productosTemp.length}`);
         return productosTemp;
     }
 
@@ -591,18 +586,10 @@
             const cantidadCarro = enCarro ? enCarro.cantidad : 0;
             const safeId = prod.codigo.replace(/[^a-zA-Z0-9]/g, '_');
             
-            // Formatear precios para mostrar correctamente
+            // Precios en VERTICAL (uno debajo del otro)
             const preciosHTML = prod.precios.map(p => {
-                let textoRango = "";
-                if (p.max === 999) {
-                    textoRango = `${p.min} o más`;
-                } else if (p.min === p.max) {
-                    textoRango = `${p.min} pieza`;
-                } else {
-                    textoRango = `${p.min} a ${p.max}`;
-                }
-                return `<span class="price-item">${textoRango}: $${formatearPrecio(p.precio)}</span>`;
-            }).join(' ');
+                return `<div class="price-item">📊 ${p.texto}: $${formatearPrecio(p.precio)}</div>`;
+            }).join('');
             
             const card = document.createElement('div');
             card.className = 'product-card';
@@ -834,15 +821,15 @@
         try {
             document.getElementById('productsGrid').innerHTML = '<div class="loading">🔄 Cargando productos...</div>';
             
-            const response = await fetch(CSV_URL + "?t=" + new Date().getTime());
+            const response = await fetch(CSV_URL);
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
             const csvText = await response.text();
             
+            console.log("CSV recibido, longitud:", csvText.length);
             productos = parseCSV(csvText);
             
-            if (productos.length === 0) throw new Error("No se encontraron productos válidos en el CSV");
+            if (productos.length === 0) throw new Error("No se encontraron productos válidos");
             
-            console.log(`✅ Cargados ${productos.length} productos`);
             inicializarCategorias();
             renderizarProductos();
             actualizarTodo();
@@ -852,7 +839,7 @@
                 <div class="error">
                     ⚠️ Error cargando productos: ${error.message}<br><br>
                     Verifica que el CSV esté en:<br>
-                    <small>${CSV_URL}</small>
+                    <small>${CSV_URL.split('?')[0]}</small>
                 </div>
             `;
         }
