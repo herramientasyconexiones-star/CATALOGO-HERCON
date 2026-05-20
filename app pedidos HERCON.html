@@ -18,7 +18,6 @@
             color: #1e2a2f;
         }
 
-        /* Header */
         .header {
             background: #1e3c2c;
             color: white;
@@ -39,7 +38,6 @@
             margin-top: 3px;
         }
 
-        /* Barra de categorías - scroll horizontal */
         .category-bar {
             background: #fef9e8;
             display: flex;
@@ -52,7 +50,6 @@
             z-index: 99;
             border-bottom: 1px solid #e0d5c0;
             scrollbar-width: thin;
-            white-space: nowrap;
         }
 
         .category-bar::-webkit-scrollbar {
@@ -76,7 +73,6 @@
             color: white;
         }
 
-        /* Grid de productos - 3 columnas */
         .products-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -84,7 +80,6 @@
             padding: 10px;
         }
 
-        /* Tarjeta de producto compacta */
         .product-card {
             background: white;
             border-radius: 12px;
@@ -141,17 +136,22 @@
         .price-scale {
             font-size: 0.55rem;
             background: #f1f0ea;
-            padding: 4px;
+            padding: 5px;
             border-radius: 6px;
             margin-bottom: 8px;
+            line-height: 1.4;
         }
 
-        .price-scale span {
+        .price-scale .price-item {
             display: inline-block;
-            font-size: 0.5rem;
+            background: white;
+            padding: 2px 4px;
+            border-radius: 4px;
+            margin: 1px;
+            font-size: 0.55rem;
+            font-weight: 500;
         }
 
-        /* Controles de cantidad muy compactos */
         .cart-control {
             display: flex;
             align-items: center;
@@ -210,10 +210,10 @@
             border-radius: 20px;
             font-size: 0.55rem;
             font-weight: bold;
-            white-space: nowrap;
+            text-align: center;
+            margin-top: 4px;
         }
 
-        /* Carrito flotante */
         .cart-fab {
             position: fixed;
             bottom: 20px;
@@ -247,7 +247,6 @@
             font-weight: bold;
         }
 
-        /* Modal del carrito */
         .modal {
             display: none;
             position: fixed;
@@ -412,7 +411,7 @@
 
 <script>
     // ============================================================
-    // CONFIGURACIÓN - CAMBIA ESTA URL POR LA DE TU CSV EN GITHUB
+    // CONFIGURACIÓN - URL del CSV en GitHub
     // ============================================================
     const CSV_URL = "https://raw.githubusercontent.com/josemanuel151/catalogoHERCON/main/base_de_precios.csv";
     // ============================================================
@@ -420,7 +419,41 @@
     let productos = [];
     let carrito = [];
 
-    // Función para parsear CSV
+    // Función para formatear precio con 2 decimales
+    function formatearPrecio(precio) {
+        return precio.toFixed(2);
+    }
+
+    // Función para formatear el texto del rango
+    function formatearRango(rangoStr) {
+        if (!rangoStr) return "";
+        rangoStr = rangoStr.trim();
+        
+        // Reemplazar caracteres especiales
+        rangoStr = rangoStr.replace(/mįs/g, 'más');
+        
+        // Si contiene "ó más" o "o más"
+        if (rangoStr.includes("ó más") || rangoStr.includes("o más")) {
+            const num = rangoStr.match(/\d+/);
+            if (num) return `${num[0]} o más`;
+        }
+        
+        // Si contiene "a"
+        if (rangoStr.includes("a")) {
+            const nums = rangoStr.match(/\d+/g);
+            if (nums && nums.length >= 2) {
+                return `${nums[0]} a ${nums[1]}`;
+            }
+        }
+        
+        // Si es solo un número
+        const soloNum = rangoStr.match(/\d+/);
+        if (soloNum) return soloNum[0];
+        
+        return rangoStr;
+    }
+
+    // Función mejorada para parsear CSV
     function parseCSV(csvText) {
         const lineas = csvText.split(/\r?\n/).filter(l => l.trim() !== "");
         if (lineas.length < 2) return [];
@@ -429,7 +462,9 @@
         
         for (let i = 1; i < lineas.length; i++) {
             const linea = lineas[i];
-            // Parseo simple por comas
+            if (linea.trim() === "") continue;
+            
+            // Parseo manual respetando comillas
             const valores = [];
             let temp = "";
             let enComillas = false;
@@ -451,19 +486,43 @@
             const categoria = valores[0].replace(/^"|"$/g, '');
             const imagen = valores[1];
             const codigo = valores[2];
-            const nombre = valores[3].replace(/^"|"$/g, '');
+            let nombre = valores[3].replace(/^"|"$/g, '');
+            nombre = nombre.replace(/^\s+|\s+$/g, '');
             
-            // Extraer precios
+            // Extraer precios - usando las columnas correctas del CSV
+            // Columnas: Cantidad, Precio, Cantidad 2, Precio 2, Cantidad 3, Precio 3
             const precios = [];
-            for (let j = 5; j <= valores.length - 1; j += 2) {
-                const rangoStr = valores[j];
-                const precioStr = valores[j+1];
-                if (!rangoStr || !precioStr || rangoStr === "" || precioStr === "") continue;
-                
+            
+            // Escala 1 (columnas 5 y 6: Cantidad, Precio)
+            let rango1 = valores[5] ? valores[5].replace(/^"|"$/g, '').trim() : "";
+            let precio1 = valores[6] ? parseFloat(valores[6].replace(/^"|"$/g, '').trim()) : null;
+            if (rango1 && rango1 !== "" && precio1 !== null && !isNaN(precio1)) {
+                precios.push({ rangoOriginal: rango1, precio: precio1 });
+            }
+            
+            // Escala 2 (columnas 7 y 8: Cantidad 2, Precio 2)
+            let rango2 = valores[7] ? valores[7].replace(/^"|"$/g, '').trim() : "";
+            let precio2 = valores[8] ? parseFloat(valores[8].replace(/^"|"$/g, '').trim()) : null;
+            if (rango2 && rango2 !== "" && precio2 !== null && !isNaN(precio2)) {
+                precios.push({ rangoOriginal: rango2, precio: precio2 });
+            }
+            
+            // Escala 3 (columnas 9 y 10: Cantidad 3, Precio 3)
+            let rango3 = valores[9] ? valores[9].replace(/^"|"$/g, '').trim() : "";
+            let precio3 = valores[10] ? parseFloat(valores[10].replace(/^"|"$/g, '').trim()) : null;
+            if (rango3 && rango3 !== "" && precio3 !== null && !isNaN(precio3)) {
+                precios.push({ rangoOriginal: rango3, precio: precio3 });
+            }
+            
+            if (precios.length === 0) continue;
+            
+            // Procesar cada precio para obtener min y max
+            const preciosProcesados = [];
+            for (let p of precios) {
                 let min = 1, max = 999;
-                const rangoLimpio = rangoStr.toLowerCase().replace(/[^0-9\-\ó\s]/g, '');
+                const rangoLimpio = p.rangoOriginal.toLowerCase();
                 
-                if (rangoLimpio.includes("ó más") || rangoLimpio.includes("o mas")) {
+                if (rangoLimpio.includes("ó más") || rangoLimpio.includes("o más") || rangoLimpio.includes("o mįs")) {
                     const match = rangoLimpio.match(/(\d+)/);
                     min = match ? parseInt(match[1]) : 1;
                     max = 999;
@@ -474,31 +533,37 @@
                         max = parseInt(nums[1]);
                     }
                 } else {
-                    const unico = parseInt(rangoLimpio);
-                    if (!isNaN(unico)) { min = unico; max = unico; }
+                    const soloNum = rangoLimpio.replace(/[^0-9]/g, '');
+                    if (soloNum) {
+                        min = parseInt(soloNum);
+                        max = min;
+                    }
                 }
                 
-                const precio = parseFloat(precioStr);
-                if (!isNaN(precio)) {
-                    precios.push({ min, max, precio });
-                }
+                preciosProcesados.push({
+                    min: min,
+                    max: max,
+                    precio: p.precio,
+                    textoMostrar: formatearRango(p.rangoOriginal)
+                });
             }
             
-            if (precios.length === 0) continue;
+            // Ordenar por cantidad mínima
+            preciosProcesados.sort((a,b) => a.min - b.min);
             
             productosTemp.push({
                 categoria,
                 codigo,
-                nombre: nombre.substring(0, 50),
-                imagen: imagen || "https://placehold.co/200x150?text=Sin+Imagen",
-                precios: precios.sort((a,b) => a.min - b.min)
+                nombre: nombre.length > 45 ? nombre.substring(0, 45) + '…' : nombre,
+                imagen: imagen && imagen.startsWith('http') ? imagen : "https://placehold.co/200x150?text=Sin+Imagen",
+                precios: preciosProcesados
             });
         }
         
+        console.log(`✅ Parseados ${productosTemp.length} productos`);
         return productosTemp;
     }
 
-    // Obtener precio según cantidad
     function obtenerPrecioPorCantidad(producto, cantidad) {
         for (let escala of producto.precios) {
             if (cantidad >= escala.min && cantidad <= escala.max) return escala.precio;
@@ -506,7 +571,6 @@
         return producto.precios[producto.precios.length-1].precio;
     }
 
-    // Renderizar productos (grid 3 columnas)
     function renderizarProductos() {
         const categoriaSeleccionada = document.getElementById('categoryBar').getAttribute('data-cat') || 'Todos';
         const grid = document.getElementById('productsGrid');
@@ -527,6 +591,19 @@
             const cantidadCarro = enCarro ? enCarro.cantidad : 0;
             const safeId = prod.codigo.replace(/[^a-zA-Z0-9]/g, '_');
             
+            // Formatear precios para mostrar correctamente
+            const preciosHTML = prod.precios.map(p => {
+                let textoRango = "";
+                if (p.max === 999) {
+                    textoRango = `${p.min} o más`;
+                } else if (p.min === p.max) {
+                    textoRango = `${p.min} pieza`;
+                } else {
+                    textoRango = `${p.min} a ${p.max}`;
+                }
+                return `<span class="price-item">${textoRango}: $${formatearPrecio(p.precio)}</span>`;
+            }).join(' ');
+            
             const card = document.createElement('div');
             card.className = 'product-card';
             card.innerHTML = `
@@ -536,9 +613,7 @@
                 <div class="product-info">
                     <div class="product-codigo">📦 ${prod.codigo}</div>
                     <div class="product-nombre">${prod.nombre}</div>
-                    <div class="price-scale">
-                        ${prod.precios.map(p => `<span>${p.min}-${p.max===999?'+':p.max}: $${p.precio}</span>`).join(' ')}
-                    </div>
+                    <div class="price-scale">${preciosHTML}</div>
                     <div class="cart-control">
                         <div class="qty-selector">
                             <button class="qty-btn" data-op="dec" data-code="${prod.codigo}">−</button>
@@ -547,13 +622,13 @@
                         </div>
                         <button class="add-btn" data-code="${prod.codigo}">Agregar</button>
                     </div>
-                    ${cantidadCarro > 0 ? `<div class="selected-badge" style="margin-top:4px; text-align:center;">✓ ${cantidadCarro} pz</div>` : ''}
+                    ${cantidadCarro > 0 ? `<div class="selected-badge">✓ ${cantidadCarro} unidades</div>` : ''}
                 </div>
             `;
             grid.appendChild(card);
         });
         
-        // Eventos después de renderizar
+        // Eventos
         document.querySelectorAll('.qty-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -644,7 +719,7 @@
                 <div class="cart-item">
                     <strong>${item.codigo}</strong><br>
                     ${item.nombre}<br>
-                    Cantidad: ${item.cantidad} x $${item.precioUnitario} = <strong>$${subtotal.toFixed(2)}</strong>
+                    Cantidad: ${item.cantidad} x $${formatearPrecio(item.precioUnitario)} = <strong>$${formatearPrecio(subtotal)}</strong>
                     <div class="cart-item-actions">
                         <button class="btn-edit-item" data-code="${item.codigo}">✏️ Modificar</button>
                         <button class="btn-remove-line" data-code="${item.codigo}">🗑️ Eliminar</button>
@@ -654,9 +729,8 @@
         });
         
         container.innerHTML = html;
-        document.getElementById('cartTotal').innerHTML = `💰 TOTAL: $${totalGeneral.toFixed(2)} MXN`;
+        document.getElementById('cartTotal').innerHTML = `💰 TOTAL: $${formatearPrecio(totalGeneral)} MXN`;
         
-        // Eventos del modal
         document.querySelectorAll('.btn-remove-line').forEach(btn => {
             btn.addEventListener('click', () => {
                 const code = btn.getAttribute('data-code');
@@ -700,7 +774,6 @@
         document.getElementById('cartModal').style.display = 'flex';
     }
 
-    // Mensaje de WhatsApp modificado: "FAVOR DE COTIZAR ESTE PEDIDO"
     function enviarWhatsApp() {
         if (carrito.length === 0) {
             alert("Agrega productos al pedido primero");
@@ -717,11 +790,11 @@
             total += subtotal;
             mensaje += `%0A📌 *${item.codigo}*%0A`;
             mensaje += `   ${item.nombre}%0A`;
-            mensaje += `   Cant: ${item.cantidad} x $${item.precioUnitario} = $${subtotal.toFixed(2)}%0A`;
+            mensaje += `   Cant: ${item.cantidad} x $${formatearPrecio(item.precioUnitario)} = $${formatearPrecio(subtotal)}%0A`;
         });
         
         mensaje += "%0A──────────────────%0A";
-        mensaje += `💰 *SUBTOTAL: $${total.toFixed(2)} MXN*%0A`;
+        mensaje += `💰 *SUBTOTAL: $${formatearPrecio(total)} MXN*%0A`;
         mensaje += "%0A══════════════════════%0A";
         mensaje += "*⚠️ FAVOR DE COTIZAR ESTE PEDIDO ⚠️*%0A";
         mensaje += "══════════════════════%0A";
@@ -757,15 +830,17 @@
         bar.setAttribute('data-cat', 'Todos');
     }
 
-    // Cargar productos desde CSV
     async function cargarProductos() {
         try {
-            const response = await fetch(CSV_URL);
+            document.getElementById('productsGrid').innerHTML = '<div class="loading">🔄 Cargando productos...</div>';
+            
+            const response = await fetch(CSV_URL + "?t=" + new Date().getTime());
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
             const csvText = await response.text();
+            
             productos = parseCSV(csvText);
             
-            if (productos.length === 0) throw new Error("No se encontraron productos");
+            if (productos.length === 0) throw new Error("No se encontraron productos válidos en el CSV");
             
             console.log(`✅ Cargados ${productos.length} productos`);
             inicializarCategorias();
@@ -783,7 +858,6 @@
         }
     }
 
-    // Eventos
     document.getElementById('cartFab').addEventListener('click', openModal);
     document.getElementById('clearAllBtn').addEventListener('click', () => {
         if (confirm("¿Cancelar TODO el pedido?")) {
@@ -794,7 +868,6 @@
     });
     document.getElementById('sendWhatsappBtn').addEventListener('click', enviarWhatsApp);
 
-    // Iniciar
     cargarProductos();
 </script>
 </body>
