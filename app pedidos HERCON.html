@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Catálogo HERRAMIENTAS Y CONEXIONES</title>
+    <style>
+        /* Aquí va TODO el CSS que ya tenías (sin cambios) */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Roboto, sans-serif; background: #f5f5f0; padding: 0 0 90px 0; color: #1e2a2f; }
+        .header { background: #1e3c2c; color: white; padding: 20px 16px 16px; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; }
+        .header h1 { font-size: 1.7rem; font-weight: 700; }
+        .category-bar { background: white; display: flex; flex-wrap: wrap; gap: 8px; padding: 12px 16px; border-bottom: 1px solid #ddd; position: sticky; top: 105px; background: #fef9e8; z-index: 99; }
+        .cat-btn { background: #e7e3d4; border: none; padding: 8px 18px; border-radius: 40px; font-weight: 600; cursor: pointer; }
+        .cat-btn.active { background: #c17b2e; color: white; }
+        .products-grid { display: flex; flex-direction: column; gap: 16px; padding: 16px; }
+        .product-card { background: white; border-radius: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); display: flex; flex-direction: column; overflow: hidden; border: 1px solid #ede6d5; }
+        .product-img { width: 100%; background: #faf7f0; display: flex; justify-content: center; align-items: center; padding: 16px; min-height: 160px; }
+        .product-img img { max-width: 100%; max-height: 140px; object-fit: contain; }
+        .product-info { padding: 14px 16px; border-top: 1px solid #f0e6d6; }
+        .product-codigo { font-size: 0.7rem; font-weight: 600; color: #b45f1b; background: #fef3e0; display: inline-block; padding: 2px 12px; border-radius: 30px; margin-bottom: 8px; }
+        .product-nombre { font-weight: 700; font-size: 1rem; margin: 6px 0; }
+        .price-scale { font-size: 0.75rem; background: #f1f0ea; padding: 8px 10px; border-radius: 16px; margin: 8px 0; }
+        .cart-control { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; gap: 8px; }
+        .qty-selector { display: flex; align-items: center; gap: 12px; background: #f3f2ed; padding: 5px 12px; border-radius: 40px; }
+        .qty-btn { background: #dbd5c0; border: none; width: 32px; height: 32px; border-radius: 40px; font-size: 1.4rem; font-weight: bold; cursor: pointer; }
+        .qty-num { font-weight: 700; font-size: 1.2rem; min-width: 36px; text-align: center; }
+        .add-btn { background: #1e3c2c; color: white; border: none; padding: 8px 18px; border-radius: 40px; font-weight: 600; cursor: pointer; }
+        .selected-badge { background: #c17b2e; color: white; padding: 4px 12px; border-radius: 40px; font-size: 0.75rem; }
+        .cart-fab { position: fixed; bottom: 20px; right: 20px; background: #c17b2e; width: 58px; height: 58px; border-radius: 40px; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 16px rgba(0,0,0,0.2); cursor: pointer; z-index: 200; border: 2px solid white; }
+        .cart-count { position: absolute; top: -4px; right: -4px; background: red; color: white; border-radius: 30px; padding: 2px 8px; font-size: 0.75rem; font-weight: bold; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center; padding: 16px; }
+        .modal-content { background: white; width: 100%; max-width: 500px; max-height: 85vh; border-radius: 32px; display: flex; flex-direction: column; overflow: hidden; }
+        .modal-header { padding: 16px; background: #1e3c2c; color: white; display: flex; justify-content: space-between; }
+        .cart-items { flex: 1; overflow-y: auto; padding: 12px; }
+        .cart-item { display: flex; justify-content: space-between; border-bottom: 1px solid #ddd; padding: 12px 0; flex-wrap: wrap; }
+        .cart-total { padding: 16px; background: #fef3e0; font-weight: bold; text-align: right; }
+        .modal-footer { padding: 16px; display: flex; gap: 12px; }
+        .btn-whatsapp { background: #25D366; color: white; flex: 1; padding: 12px; border-radius: 60px; font-weight: bold; border: none; cursor: pointer; }
+        .btn-clear { background: #bdb38c; flex: 1; padding: 12px; border-radius: 60px; font-weight: bold; border: none; cursor: pointer; }
+        .btn-close { background: #aaa; flex: 1; padding: 12px; border-radius: 60px; font-weight: bold; border: none; cursor: pointer; }
+        .loading { text-align: center; padding: 40px; font-size: 1.2rem; color: #1e3c2c; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>🛠️ HERRAMIENTAS Y CONEXIONES</h1>
+    <p>Elige productos, arma tu pedido y envíalo por WhatsApp</p>
+</div>
+
+<div class="category-bar" id="categoryBar"></div>
+<div class="products-grid" id="productsGrid"><div class="loading">Cargando productos...</div></div>
+
+<div class="cart-fab" id="cartFab"><span>🛒</span><div class="cart-count" id="cartCount">0</div></div>
+
+<div id="cartModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header"><h3>📋 Resumen del Pedido</h3><button onclick="closeModal()" style="background:none;border:none;color:white;font-size:24px;">&times;</button></div>
+        <div class="cart-items" id="cartItemsList"></div>
+        <div class="cart-total" id="cartTotal">Total: $0.00</div>
+        <div class="modal-footer">
+            <button class="btn-clear" id="clearAllBtn">🗑️ Cancelar todo</button>
+            <button class="btn-whatsapp" id="sendWhatsappBtn">📲 Enviar pedido</button>
+            <button class="btn-close" onclick="closeModal()">Cerrar</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let productos = [];      // Aquí se guardarán los productos leídos del CSV
+    let carrito = [];
+
+    // === CONFIGURACIÓN: cambia esta línea según dónde esté tu CSV ===
+    // Opción A: mismo folder (recomendado)
+    const CSV_URL = "base_de_precios.csv";
+    // Opción B: URL pública (descomenta la siguiente línea y comenta la anterior)
+    // const CSV_URL = "https://tusitio.com/ruta/base_de_precios.csv";
+    // Opción C: si tienes problemas con CORS, usa un proxy (no recomendado para producción)
+    // ================================================================
+
+    // Función para leer y parsear CSV
+    async function cargarProductosDesdeCSV() {
+        try {
+            const response = await fetch(CSV_URL);
+            if (!response.ok) throw new Error(`No se pudo cargar el CSV (${response.status})`);
+            const csvText = await response.text();
+            
+            // Parsear CSV manual (soportando comillas y saltos de línea)
+            const lineas = csvText.split(/\r?\n/).filter(l => l.trim() !== "");
+            const encabezados = lineas[0].split(",").map(h => h.replace(/^"|"$/g, '').trim());
+            
+            const productosTemp = [];
+            
+            for (let i = 1; i < lineas.length; i++) {
+                const linea = lineas[i];
+                // Parseo simple (para CSV sin comillas internas complejas)
+                const valores = linea.split(",").map(v => v.replace(/^"|"$/g, '').trim());
+                if (valores.length < 8) continue;
+                
+                const categoria = valores[0];
+                const imagen = valores[1];
+                const codigo = valores[2];
+                const nombre = valores[3];
+                
+                // Extraer escalas de precios (formato: "1 a 11,28.30", "12 o más,27.00")
+                const precios = [];
+                for (let j = 5; j <= valores.length-1; j+=2) {
+                    const rangoStr = valores[j];
+                    const precioStr = valores[j+1];
+                    if (!rangoStr || !precioStr || rangoStr === "" || precioStr === "") continue;
+                    
+                    let min = 1, max = 999;
+                    const rangoLimpio = rangoStr.replace(/[^0-9\-\ó\s]/g, '').toLowerCase();
+                    if (rangoLimpio.includes("ó más") || rangoLimpio.includes("o mas")) {
+                        const match = rangoLimpio.match(/(\d+)/);
+                        min = match ? parseInt(match[1]) : 1;
+                        max = 999;
+                    } else if (rangoLimpio.includes("a")) {
+                        const nums = rangoLimpio.match(/\d+/g);
+                        if (nums && nums.length >= 2) {
+                            min = parseInt(nums[0]);
+                            max = parseInt(nums[1]);
+                        }
+                    } else {
+                        const unico = parseInt(rangoLimpio);
+                        if (!isNaN(unico)) { min = unico; max = unico; }
+                    }
+                    
+                    const precio = parseFloat(precioStr);
+                    if (!isNaN(precio)) {
+                        precios.push({ min, max, precio });
+                    }
+                }
+                
+                if (precios.length === 0) continue;
+                
+                productosTemp.push({
+                    categoria,
+                    codigo,
+                    nombre,
+                    imagen: imagen || "https://placehold.co/200x150?text=Sin+Imagen",
+                    precios: precios.sort((a,b) => a.min - b.min)
+                });
+            }
+            
+            if (productosTemp.length === 0) throw new Error("No se encontraron productos válidos en el CSV");
+            productos = productosTemp;
+            console.log(`✅ Cargados ${productos.length} productos desde CSV`);
+            return true;
+        } catch (error) {
+            console.error("Error cargando CSV:", error);
+            document.getElementById("productsGrid").innerHTML = `<div class="loading" style="color:red;">⚠️ Error al cargar productos: ${error.message}<br><br>Asegúrate de que el archivo 'base_de_precios.csv' esté en la misma carpeta que esta página.</div>`;
+            return false;
+        }
+    }
+
+    function obtenerPrecioPorCantidad(producto, cantidad) {
+        for(let escala of producto.precios) {
+            if(cantidad >= escala.min && cantidad <= escala.max) return escala.precio;
+        }
+        return producto.precios[producto.precios.length-1].precio;
+    }
+
+    function actualizarInterfaz() {
+        renderProductos();
+        const totalItems = carrito.reduce((sum,i)=>sum+i.cantidad,0);
+        document.getElementById('cartCount').innerText = totalItems;
+    }
+
+    function renderProductos() {
+        const categoriaSeleccionada = document.getElementById('categoryBar').getAttribute('data-cat') || 'Todos';
+        const grid = document.getElementById('productsGrid');
+        let filtrados = categoriaSeleccionada === 'Todos' ? productos : productos.filter(p => p.categoria === categoriaSeleccionada);
+        grid.innerHTML = '';
+        filtrados.forEach(prod => {
+            const enCarro = carrito.find(i => i.codigo === prod.codigo);
+            let cantidadCarro = enCarro ? enCarro.cantidad : 0;
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            card.innerHTML = `
+                <div class="product-img"><img src="${prod.imagen}" alt="${prod.nombre}" onerror="this.src='https://placehold.co/200x150?text=Imagen'"></div>
+                <div class="product-info">
+                    <div class="product-codigo">Código: ${prod.codigo}</div>
+                    <div class="product-nombre">${prod.nombre}</div>
+                    <div class="price-scale">${prod.precios.map(e=>`${e.min}-${e.max===999?'+':e.max}: $${e.precio}`).join(' | ')}</div>
+                    <div class="cart-control">
+                        <div class="qty-selector">
+                            <button class="qty-btn" data-op="dec" data-code="${prod.codigo}">-</button>
+                            <span class="qty-num" id="qty-${prod.codigo}">${cantidadCarro}</span>
+                            <button class="qty-btn" data-op="inc" data-code="${prod.codigo}">+</button>
+                        </div>
+                        <button class="add-btn" data-code="${prod.codigo}">Agregar</button>
+                        ${cantidadCarro>0 ? `<div class="selected-badge">✖ ${cantidadCarro} pz</div>` : ''}
+                    </div>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+        
+        document.querySelectorAll('.qty-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const op = btn.getAttribute('data-op');
+                const code = btn.getAttribute('data-code');
+                const prod = productos.find(p=>p.codigo===code);
+                if(!prod) return;
+                let item = carrito.find(i=>i.codigo===code);
+                let cantActual = item ? item.cantidad : 0;
+                if(op === 'inc') {
+                    cantActual++;
+                    const precioUnit = obtenerPrecioPorCantidad(prod, cantActual);
+                    if(item) { item.cantidad = cantActual; item.precioUnitario = precioUnit; }
+                    else { carrito.push({ codigo: prod.codigo, nombre: prod.nombre, cantidad: 1, precioUnitario: precioUnit, imagen: prod.imagen }); }
+                } else if(op === 'dec' && cantActual > 0) {
+                    cantActual--;
+                    if(cantActual === 0) carrito = carrito.filter(i=>i.codigo!==code);
+                    else { item.cantidad = cantActual; item.precioUnitario = obtenerPrecioPorCantidad(prod, cantActual); }
+                }
+                actualizarInterfaz();
+            });
+        });
+        document.querySelectorAll('.add-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const code = btn.getAttribute('data-code');
+                const prod = productos.find(p=>p.codigo===code);
+                if(!prod) return;
+                let item = carrito.find(i=>i.codigo===code);
+                let nuevaCant = item ? item.cantidad+1 : 1;
+                const precioUnit = obtenerPrecioPorCantidad(prod, nuevaCant);
+                if(item) { item.cantidad = nuevaCant; item.precioUnitario = precioUnit; }
+                else { carrito.push({ codigo: prod.codigo, nombre: prod.nombre, cantidad: 1, precioUnitario: precioUnit, imagen: prod.imagen }); }
+                actualizarInterfaz();
+            });
+        });
+    }
+
+    function renderCarritoModal() {
+        const container = document.getElementById('cartItemsList');
+        if(carrito.length === 0) {
+            container.innerHTML = '<div style="padding:20px; text-align:center">No hay productos agregados</div>';
+            document.getElementById('cartTotal').innerText = 'Total: $0.00';
+            return;
+        }
+        let html = '';
+        let totalGeneral = 0;
+        carrito.forEach(item => {
+            const subtotal = item.cantidad * item.precioUnitario;
+            totalGeneral += subtotal;
+            html += `<div class="cart-item">
+                        <div class="cart-item-details"><strong>${item.codigo}</strong><br>${item.nombre}<br><small>$${item.precioUnitario} c/u</small></div>
+                        <div class="cart-item-qty">Cant: ${item.cantidad}<br><strong>$${subtotal.toFixed(2)}</strong></div>
+                        <div class="cart-item-actions">
+                            <button class="btn-edit-item" data-editcode="${item.codigo}">✏️ Modificar</button>
+                            <button class="btn-remove-line" data-removecode="${item.codigo}">🗑️ Eliminar</button>
+                        </div>
+                    </div>`;
+        });
+        container.innerHTML = html;
+        document.getElementById('cartTotal').innerHTML = `Total: $${totalGeneral.toFixed(2)} MXN`;
+        
+        document.querySelectorAll('.btn-remove-line').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const code = btn.getAttribute('data-removecode');
+                carrito = carrito.filter(i => i.codigo !== code);
+                renderCarritoModal();
+                actualizarInterfaz();
+                if(carrito.length===0) closeModal();
+            });
+        });
+        document.querySelectorAll('.btn-edit-item').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const code = btn.getAttribute('data-editcode');
+                const prod = productos.find(p=>p.codigo===code);
+                if(prod) {
+                    let nuevaCant = prompt(`Cantidad para ${prod.nombre}:`, carrito.find(i=>i.codigo===code)?.cantidad || 1);
+                    nuevaCant = parseInt(nuevaCant);
+                    if(!isNaN(nuevaCant) && nuevaCant > 0) {
+                        const idx = carrito.findIndex(i=>i.codigo===code);
+                        if(idx>=0){
+                            carrito[idx].cantidad = nuevaCant;
+                            carrito[idx].precioUnitario = obtenerPrecioPorCantidad(prod, nuevaCant);
+                        }
+                    } else if(nuevaCant===0) carrito = carrito.filter(i=>i.codigo!==code);
+                    renderCarritoModal();
+                    actualizarInterfaz();
+                }
+            });
+        });
+    }
+
+    function closeModal() { document.getElementById('cartModal').style.display = 'none'; }
+    function openModal() { renderCarritoModal(); document.getElementById('cartModal').style.display = 'flex'; }
+
+    function generarMensajePedido() {
+        if(carrito.length===0) return "No hay productos";
+        let msg = "🛒 *PEDIDO HERRAMIENTAS Y CONEXIONES*%0A";
+        let total = 0;
+        carrito.forEach(i => {
+            let subtotal = i.cantidad * i.precioUnitario;
+            total += subtotal;
+            msg += `%0A📌 *${i.codigo}* - ${i.nombre}%0A   Cant: ${i.cantidad} x $${i.precioUnitario} = $${subtotal.toFixed(2)}%0A`;
+        });
+        msg += `%0A💰 *TOTAL: $${total.toFixed(2)} MXN*%0A%0A📍 Envío a calcular. ¡Gracias!`;
+        return msg;
+    }
+
+    function enviarWhatsApp() {
+        if(carrito.length===0) { alert("Agrega productos al pedido primero"); return; }
+        const mensaje = generarMensajePedido();
+        const url = `https://wa.me/5217731511890?text=${mensaje}`;
+        window.open(url, '_blank');
+    }
+
+    function initCategorias() {
+        const cats = [...new Set(productos.map(p=>p.categoria))];
+        const bar = document.getElementById('categoryBar');
+        bar.innerHTML = `<button class="cat-btn active" data-cat="Todos">📦 TODOS</button>`;
+        cats.sort().forEach(cat => {
+            const btn = document.createElement('button');
+            btn.className = 'cat-btn';
+            btn.innerText = cat;
+            btn.setAttribute('data-cat', cat);
+            bar.appendChild(btn);
+        });
+        bar.querySelectorAll('.cat-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                bar.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
+                btn.classList.add('active');
+                bar.setAttribute('data-cat', btn.getAttribute('data-cat'));
+                renderProductos();
+            });
+        });
+        bar.setAttribute('data-cat', 'Todos');
+    }
+
+    // Inicialización principal
+    async function iniciarApp() {
+        const cargado = await cargarProductosDesdeCSV();
+        if (cargado && productos.length > 0) {
+            initCategorias();
+            renderProductos();
+            actualizarInterfaz();
+        }
+        document.getElementById('cartFab').addEventListener('click', openModal);
+        document.getElementById('clearAllBtn').addEventListener('click', () => {
+            if(confirm("¿Cancelar todo el pedido?")) { carrito = []; actualizarInterfaz(); renderCarritoModal(); closeModal();}
+        });
+        document.getElementById('sendWhatsappBtn').addEventListener('click', enviarWhatsApp);
+    }
+    
+    iniciarApp();
+</script>
+</body>
+</html>
