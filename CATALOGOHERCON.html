@@ -696,8 +696,7 @@
             mensaje += `%0A📌 *${item.codigo}*%0A   ${item.nombre}%0A   Cant: ${item.cantidad} x $${formatearPrecio(item.precioUnitario)} = $${formatearPrecio(subtotal)}%0A`;
         });
         mensaje += `%0A──────────────────%0A💰 *SUBTOTAL: $${formatearPrecio(total)} MXN*%0A`;
-        mensaje += "%0A══════════════════════%0A*⚠️ FAVOR DE COTIZAR ESTE PEDIDO ⚠️*%0A══════════════════════%0A";
-        mensaje += "%0A📍 Revisaremos las existencias de su pedido%0A🙏 Gracias por su cotización";
+        mensaje += "%0A📍 FAVOR DE COTIZAR ESTE PEDIDO%0A🙏";
         window.open(`https://wa.me/5217731511890?text=${mensaje}`, '_blank');
     }
 
