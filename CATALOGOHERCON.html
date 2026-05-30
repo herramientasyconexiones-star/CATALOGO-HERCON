@@ -379,7 +379,7 @@
 
 <script>
     // ============================================================
-    // VERSIÓN 6.0 - IMÁGENES GRANDES + BUSCADOR + CANTIDAD MANUAL
+    // VERSIÓN 7.0 - LEE CSV CORRECTAMENTE (rangos con espacios y caracteres especiales)
     // ============================================================
     const CSV_URL = "https://raw.githubusercontent.com/herramientasyconexiones-star/CATALOGO-HERCON/main/base_de_precios.csv?v=" + Date.now();
     
@@ -394,34 +394,76 @@
 
     function limpiarRango(texto) {
         if (!texto || texto === "") return "";
-        return texto.trim().replace(/^"|"$/g, '');
+        // Quitar comillas al inicio y final
+        let limpio = texto.trim().replace(/^"|"$/g, '');
+        // Reemplazar caracteres especiales
+        limpio = limpio.replace(/mįs/g, 'más');
+        return limpio;
     }
 
+    // Función mejorada para procesar rangos como " 1 a 11", " 12 o más", " 6 o mįs"
     function procesarRango(rangoStr) {
         if (!rangoStr || rangoStr === "") return null;
+        
         let limpio = rangoStr.trim().toLowerCase();
         limpio = limpio.replace(/mįs/g, 'más');
         
-        if (limpio.includes('a')) {
-            let numeros = limpio.match(/\d+/g);
-            if (numeros && numeros.length >= 2) {
-                let min = parseInt(numeros[0]);
-                let max = parseInt(numeros[1]);
+        // Eliminar múltiples espacios
+        limpio = limpio.replace(/\s+/g, ' ');
+        
+        console.log("Procesando rango:", limpio);
+        
+        // Caso 1: "1 a 11" o "1 a 11" con espacios
+        if (limpio.includes(' a ')) {
+            let partes = limpio.split(' a ');
+            let min = parseInt(partes[0]);
+            let max = parseInt(partes[1]);
+            if (!isNaN(min) && !isNaN(max)) {
                 return { min: min, max: max, texto: `${min} a ${max}` };
             }
         }
-        if (limpio.includes('más')) {
-            let numero = limpio.match(/\d+/);
-            if (numero) {
-                let min = parseInt(numero[0]);
+        
+        // Caso 2: "12 o más" o "12 o más"
+        if (limpio.includes('o más')) {
+            let partes = limpio.split('o más');
+            let min = parseInt(partes[0].trim());
+            if (!isNaN(min)) {
                 return { min: min, max: 99999, texto: `${min} o más` };
             }
         }
-        let soloNum = limpio.match(/\d+/);
+        
+        // Caso 3: "1 ó más" (con ó)
+        if (limpio.includes('ó más')) {
+            let partes = limpio.split('ó más');
+            let min = parseInt(partes[0].trim());
+            if (!isNaN(min)) {
+                return { min: min, max: 99999, texto: `${min} o más` };
+            }
+        }
+        
+        // Caso 4: "6 o mįs" (con caracter especial)
+        if (limpio.includes('o m')) {
+            let match = limpio.match(/(\d+)/);
+            if (match) {
+                let min = parseInt(match[1]);
+                return { min: min, max: 99999, texto: `${min} o más` };
+            }
+        }
+        
+        // Caso 5: solo un número (ej: "24")
+        let soloNum = limpio.match(/^\d+$/);
         if (soloNum) {
             let num = parseInt(soloNum[0]);
             return { min: num, max: num, texto: `${num} pieza` };
         }
+        
+        // Caso 6: extraer cualquier número del texto
+        let cualquierNum = limpio.match(/\d+/);
+        if (cualquierNum) {
+            let num = parseInt(cualquierNum[0]);
+            return { min: num, max: num, texto: `${num} pieza` };
+        }
+        
         return null;
     }
 
@@ -430,21 +472,30 @@
         if (lineas.length < 2) return [];
         const productosTemp = [];
         
+        // Obtener encabezados (primera línea)
+        const encabezados = lineas[0].split(',').map(h => h.trim());
+        
         for (let i = 1; i < lineas.length; i++) {
             const linea = lineas[i];
             if (linea.trim() === "") continue;
             
+            // Parsear CSV respetando comillas
             const valores = [];
             let temp = "";
             let enComillas = false;
+            
             for (let c of linea) {
-                if (c === '"') enComillas = !enComillas;
-                else if (c === ',' && !enComillas) {
+                if (c === '"') {
+                    enComillas = !enComillas;
+                } else if (c === ',' && !enComillas) {
                     valores.push(temp.trim());
                     temp = "";
-                } else temp += c;
+                } else {
+                    temp += c;
+                }
             }
             valores.push(temp.trim());
+            
             if (valores.length < 6) continue;
             
             const categoria = limpiarRango(valores[0]);
@@ -455,28 +506,67 @@
             
             const preciosArray = [];
             
+            // ============================================
+            // LEER CORRECTAMENTE LAS COLUMNAS DEL CSV
+            // Columna 4 (índice 4): Cantidad 1
+            // Columna 5 (índice 5): Precio 1
+            // Columna 6 (índice 6): Cantidad 2
+            // Columna 7 (índice 7): Precio 2
+            // Columna 8 (índice 8): Cantidad 3
+            // Columna 9 (índice 9): Precio 3
+            // ============================================
+            
+            // Escala 1
             let rango1 = valores[4] ? limpiarRango(valores[4]) : "";
             let precio1 = valores[5] ? parseFloat(limpiarRango(valores[5])) : null;
-            if (rango1 && rango1 !== "" && precio1 !== null && !isNaN(precio1)) {
+            if (rango1 && rango1 !== "" && precio1 !== null && !isNaN(precio1) && precio1 > 0) {
                 let rangoInfo = procesarRango(rango1);
-                if (rangoInfo) preciosArray.push({ min: rangoInfo.min, max: rangoInfo.max, precio: precio1, texto: rangoInfo.texto });
+                if (rangoInfo) {
+                    preciosArray.push({ 
+                        min: rangoInfo.min, 
+                        max: rangoInfo.max, 
+                        precio: precio1, 
+                        texto: rangoInfo.texto 
+                    });
+                }
             }
             
+            // Escala 2
             let rango2 = valores[6] ? limpiarRango(valores[6]) : "";
             let precio2 = valores[7] ? parseFloat(limpiarRango(valores[7])) : null;
-            if (rango2 && rango2 !== "" && precio2 !== null && !isNaN(precio2)) {
+            if (rango2 && rango2 !== "" && precio2 !== null && !isNaN(precio2) && precio2 > 0) {
                 let rangoInfo = procesarRango(rango2);
-                if (rangoInfo) preciosArray.push({ min: rangoInfo.min, max: rangoInfo.max, precio: precio2, texto: rangoInfo.texto });
+                if (rangoInfo) {
+                    preciosArray.push({ 
+                        min: rangoInfo.min, 
+                        max: rangoInfo.max, 
+                        precio: precio2, 
+                        texto: rangoInfo.texto 
+                    });
+                }
             }
             
+            // Escala 3
             let rango3 = valores[8] ? limpiarRango(valores[8]) : "";
             let precio3 = valores[9] ? parseFloat(limpiarRango(valores[9])) : null;
-            if (rango3 && rango3 !== "" && precio3 !== null && !isNaN(precio3)) {
+            if (rango3 && rango3 !== "" && precio3 !== null && !isNaN(precio3) && precio3 > 0) {
                 let rangoInfo = procesarRango(rango3);
-                if (rangoInfo) preciosArray.push({ min: rangoInfo.min, max: rangoInfo.max, precio: precio3, texto: rangoInfo.texto });
+                if (rangoInfo) {
+                    preciosArray.push({ 
+                        min: rangoInfo.min, 
+                        max: rangoInfo.max, 
+                        precio: precio3, 
+                        texto: rangoInfo.texto 
+                    });
+                }
             }
             
-            if (preciosArray.length === 0) continue;
+            if (preciosArray.length === 0) {
+                console.log(`Producto ${codigo} no tiene precios válidos`);
+                continue;
+            }
+            
+            // Ordenar por cantidad mínima
             preciosArray.sort((a,b) => a.min - b.min);
             
             productosTemp.push({
@@ -487,6 +577,8 @@
                 precios: preciosArray
             });
         }
+        
+        console.log(`✅ Productos cargados: ${productosTemp.length}`);
         return productosTemp;
     }
 
@@ -736,13 +828,16 @@
             const response = await fetch(CSV_URL);
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
             const csvText = await response.text();
+            console.log("CSV recibido, primeras 200 letras:", csvText.substring(0, 200));
             productos = parseCSV(csvText);
             if (productos.length === 0) throw new Error("No se encontraron productos válidos");
+            console.log("Primer producto ejemplo:", productos[0]);
             inicializarCategorias();
             setupBuscador();
             renderizarProductos();
             actualizarTodo();
         } catch (error) {
+            console.error(error);
             document.getElementById('productsGrid').innerHTML = `<div class="error">⚠️ Error: ${error.message}<br><small>${CSV_URL.split('?')[0]}</small></div>`;
         }
     }
