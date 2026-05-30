@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <title>Catálogo HERCON - Pedidos</title>
     <style>
-        /* (el mismo CSS que ya tenías, no cambia) */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', Roboto, sans-serif; background: #f5f5f0; padding: 0 0 80px 0; color: #1e2a2f; }
         .header { background: #1e3c2c; color: white; padding: 14px 12px; position: sticky; top: 0; z-index: 100; text-align: center; }
@@ -92,8 +91,9 @@
 
 <script>
     // ============================================================
-    // LEE LOS PRODUCTOS DESDE UN ARCHIVO JSON EXTERNO
+    // LEE LOS PRODUCTOS DESDE productos.json (mismo repositorio)
     // ============================================================
+    // IMPORTANTE: Asegúrate de que el archivo 'productos.json' esté en el mismo repositorio
     const JSON_URL = "https://raw.githubusercontent.com/herramientasyconexiones-star/CATALOGO-HERCON/main/productos.json?v=" + Date.now();
     
     let productos = [];
@@ -102,25 +102,54 @@
     let textoBusqueda = "";
 
     function formatearPrecio(precio) {
-        return precio.toFixed(2);
+        return Number(precio).toFixed(2);
     }
 
     async function cargarProductos() {
         try {
-            document.getElementById('productsGrid').innerHTML = '<div class="loading">🔄 Cargando productos...</div>';
+            document.getElementById('productsGrid').innerHTML = '<div class="loading">🔄 Cargando productos desde JSON...</div>';
+            
+            console.log("Cargando desde:", JSON_URL);
             const response = await fetch(JSON_URL);
-            if (!response.ok) throw new Error(`HTTP ${response.status} - No se pudo cargar productos.json`);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status} - No se pudo cargar productos.json`);
+            }
+            
             const data = await response.json();
-            productos = data.productos;
-            if (productos.length === 0) throw new Error("No hay productos en el archivo JSON");
+            console.log("Datos recibidos:", data);
+            
+            // Verificar estructura
+            if (data && data.productos && Array.isArray(data.productos)) {
+                productos = data.productos;
+            } else if (Array.isArray(data)) {
+                productos = data;
+            } else {
+                throw new Error("El archivo JSON no tiene el formato esperado. Debe tener un array 'productos'");
+            }
+            
+            if (productos.length === 0) {
+                throw new Error("El archivo JSON no contiene productos");
+            }
+            
+            console.log(`✅ Cargados ${productos.length} productos desde JSON`);
             
             inicializarCategorias();
             setupBuscador();
             renderizarProductos();
             actualizarTodo();
+            
         } catch (error) {
-            console.error(error);
-            document.getElementById('productsGrid').innerHTML = `<div class="error">⚠️ Error: ${error.message}<br><small>Asegúrate de que el archivo 'productos.json' exista en el repositorio.</small></div>`;
+            console.error("Error detallado:", error);
+            document.getElementById('productsGrid').innerHTML = `
+                <div class="error">
+                    ⚠️ Error: ${error.message}<br><br>
+                    <strong>No se pudo cargar 'productos.json'</strong><br><br>
+                    Verifica que:<br>
+                    1. El archivo 'productos.json' existe en el repositorio<br>
+                    2. La URL es correcta<br>
+                    3. El JSON tiene formato válido
+                </div>`;
         }
     }
 
