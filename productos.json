@@ -1,0 +1,46 @@
+{
+  "productos": [
+    {
+      "categoria": "Herramientas",
+      "codigo": "3056",
+      "nombre": "Amarrador economico",
+      "imagen": "https://www.herramientasyconexiones.com/productos/m/1660759681-7.jpg",
+      "precios": [
+        { "min": 1, "max": 5, "precio": 59.80, "texto": "1 a 5" },
+        { "min": 6, "max": 999, "precio": 57.40, "texto": "6 o más" }
+      ]
+    },
+    {
+      "categoria": "Herramientas",
+      "codigo": "8173",
+      "nombre": "Arco METALICO mini con segueta 12 pulgadas",
+      "imagen": "https://www.herramientasyconexiones.com/productos/m/1776452879-99.jpg",
+      "precios": [
+        { "min": 1, "max": 11, "precio": 29.10, "texto": "1 a 11" },
+        { "min": 12, "max": 23, "precio": 27.30, "texto": "12 a 23" },
+        { "min": 24, "max": 999, "precio": 26.00, "texto": "24 o más" }
+      ]
+    },
+    {
+      "categoria": "Cintas/Pegamentos/Lubricantes",
+      "codigo": "4914",
+      "nombre": "Aceite lubricante multiusos 90ml",
+      "imagen": "https://www.herramientasyconexiones.com/productos/m/1660755581-112.jpg",
+      "precios": [
+        { "min": 1, "max": 11, "precio": 28.30, "texto": "1 a 11" },
+        { "min": 12, "max": 999, "precio": 26.90, "texto": "12 o más" }
+      ]
+    },
+    {
+      "categoria": "Cintas/Pegamentos/Lubricantes",
+      "codigo": "34997",
+      "nombre": "Aceite lubricante TIPO AFLOJATODO 4 oz 118 ML aerosol",
+      "imagen": "https://www.herramientasyconexiones.com/productos/m/1776105314-64.jpg",
+      "precios": [
+        { "min": 1, "max": 5, "precio": 17.60, "texto": "1 a 5" },
+        { "min": 6, "max": 11, "precio": 16.60, "texto": "6 a 11" },
+        { "min": 12, "max": 999, "precio": 15.80, "texto": "12 o más" }
+      ]
+    }
+  ]
+}
