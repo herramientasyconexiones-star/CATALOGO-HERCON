@@ -1,882 +1,321 @@
-Aquí tienes el código completo de una aplicación web para pedidos que se alimenta de tu archivo Excel, permite buscar productos, agregar cantidades y enviar el pedido por WhatsApp.
-```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Herramientas y Conexiones - App de Pedidos</title>
-    <!-- SheetJS para leer Excel -->
-    <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
-    <!-- Font Awesome 6 (gratuito) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Catálogo HERCON - Herramientas y Conexiones</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
         }
-
         body {
-            background: #f4f6f9;
-            color: #1e2a3e;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            padding: 20px;
         }
-
-        /* Header estilo web */
-        .app-header {
-            background: linear-gradient(135deg, #1e2a3e 0%, #0f1722 100%);
-            color: white;
-            padding: 1rem 2rem;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .header-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .logo-area i {
-            font-size: 2.2rem;
-            color: #f39c12;
-        }
-        .logo-area h1 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-        }
-        .logo-area p {
-            font-size: 0.75rem;
-            opacity: 0.8;
-        }
-        .cart-summary-mobile {
-            background: #f39c12;
-            border-radius: 40px;
-            padding: 0.4rem 1rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .cart-summary-mobile span {
-            font-weight: bold;
-        }
-
-        /* Layout principal: grid productos + carrito lateral */
-        .app-layout {
-            display: flex;
-            flex-direction: row;
-            max-width: 1600px;
+        .container {
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 1.5rem;
-            gap: 2rem;
-        }
-        .products-section {
-            flex: 3;
-            min-width: 0;
-        }
-        .cart-section {
-            flex: 1.2;
             background: white;
-            border-radius: 28px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
-            height: fit-content;
-            position: sticky;
-            top: 100px;
-            max-height: calc(100vh - 120px);
-            overflow-y: auto;
-            padding: 1.2rem;
-            border: 1px solid #e9ecef;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
         }
-        @media (max-width: 900px) {
-            .app-layout {
-                flex-direction: column;
-            }
-            .cart-section {
-                position: static;
-                order: 2;
-                margin-top: 1rem;
-            }
-            .products-section {
-                order: 1;
-            }
+        .header {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            padding: 30px;
+            text-align: center;
         }
-
-        /* Filtros y búsqueda */
-        .filter-bar {
-            background: white;
-            border-radius: 60px;
-            padding: 0.5rem 1rem;
-            margin-bottom: 1.8rem;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 0.8rem;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
-            border: 1px solid #e2e8f0;
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .search-section {
+            padding: 30px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e0e0e0;
         }
         .search-box {
-            flex: 2;
             display: flex;
-            align-items: center;
-            background: #f1f5f9;
-            border-radius: 40px;
-            padding: 0.5rem 1rem;
-            gap: 8px;
-        }
-        .search-box i {
-            color: #64748b;
-        }
-        .search-box input {
-            border: none;
-            background: transparent;
-            width: 100%;
-            font-size: 1rem;
-            outline: none;
-        }
-        .category-filters {
-            display: flex;
+            gap: 15px;
             flex-wrap: wrap;
-            gap: 8px;
-            flex: 3;
+            margin-bottom: 20px;
         }
-        .cat-pill {
-            background: #eef2ff;
-            padding: 0.4rem 1rem;
-            border-radius: 40px;
-            font-size: 0.8rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: 0.2s;
-            white-space: nowrap;
+        .search-input {
+            flex: 1;
+            padding: 15px 20px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            transition: all 0.3s;
         }
-        .cat-pill.active {
-            background: #f39c12;
+        .search-input:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 3px rgba(42,82,152,0.1);
+        }
+        .search-btn {
+            padding: 15px 30px;
+            background: #2a5298;
             color: white;
-            box-shadow: 0 2px 8px rgba(243,156,18,0.3);
-        }
-        .clear-search {
-            background: none;
             border: none;
-            color: #e53e3e;
+            border-radius: 10px;
             cursor: pointer;
+            font-size: 16px;
             font-weight: bold;
+            transition: all 0.3s;
         }
-
-        /* Grid de productos */
+        .search-btn:hover {
+            background: #1e3c72;
+            transform: translateY(-2px);
+        }
+        .stats {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 15px;
+        }
         .products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            padding: 30px;
         }
         .product-card {
             background: white;
-            border-radius: 24px;
+            border-radius: 15px;
             overflow: hidden;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-            border: 1px solid #edf2f7;
-            display: flex;
-            flex-direction: column;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            cursor: pointer;
+            border: 1px solid #e0e0e0;
         }
         .product-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 25px -12px rgba(0,0,0,0.1);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
         }
-        .product-img {
-            height: 160px;
-            background: #fafcff;
+        .product-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 1rem;
-            border-bottom: 1px solid #f0f0f0;
-        }
-        .product-img img {
-            max-height: 130px;
-            max-width: 100%;
-            object-fit: contain;
+            color: white;
+            font-size: 48px;
         }
         .product-info {
-            padding: 1rem 1rem 0.8rem;
-        }
-        .product-name {
-            font-weight: 700;
-            font-size: 0.95rem;
-            line-height: 1.3;
-            margin-bottom: 0.25rem;
-            color: #0f1722;
+            padding: 20px;
         }
         .product-code {
-            font-size: 0.7rem;
-            color: #5b6e8c;
-            margin-bottom: 0.5rem;
+            color: #666;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
         }
-        .price-display {
-            background: #fef9e6;
-            padding: 0.3rem 0.6rem;
-            border-radius: 20px;
+        .product-name {
+            font-size: 16px;
             font-weight: bold;
-            color: #b45309;
-            font-size: 0.9rem;
-            display: inline-block;
-            margin: 0.5rem 0;
+            margin-bottom: 12px;
+            color: #333;
+            line-height: 1.4;
+            min-height: 44px;
         }
-        .quantity-controls {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin: 12px 0;
-            background: #f8fafc;
-            padding: 6px 10px;
-            border-radius: 40px;
-            justify-content: space-between;
-        }
-        .qty-btn {
-            background: #e2e8f0;
-            border: none;
-            width: 32px;
-            height: 32px;
-            border-radius: 40px;
+        .product-price {
+            font-size: 24px;
             font-weight: bold;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: 0.1s;
+            color: #2a5298;
+            margin-bottom: 8px;
         }
-        .qty-btn:active { background: #cbd5e1; }
-        .qty-input {
-            width: 55px;
-            text-align: center;
-            border: 1px solid #cbd5e1;
-            border-radius: 30px;
-            padding: 6px 0;
-            font-weight: 600;
+        .product-stock {
+            font-size: 13px;
+            color: #28a745;
+            margin-bottom: 12px;
         }
-        .add-to-cart-btn {
-            background: #1e2a3e;
+        .add-to-cart {
+            width: 100%;
+            padding: 12px;
+            background: #28a745;
             color: white;
             border: none;
-            width: 100%;
-            padding: 10px;
-            border-radius: 40px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: 0.2s;
-            margin-top: 4px;
-        }
-        .add-to-cart-btn:hover {
-            background: #f39c12;
-            color: #1e2a3e;
-        }
-        /* Carrito */
-        .cart-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid #f1f1f1;
-            padding-bottom: 12px;
-            margin-bottom: 16px;
-        }
-        .cart-item {
-            display: flex;
-            gap: 12px;
-            border-bottom: 1px solid #edf2f7;
-            padding: 12px 0;
-            align-items: center;
-        }
-        .cart-item-img {
-            width: 50px;
-            height: 50px;
-            background: #f9f9f9;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .cart-item-img img {
-            max-width: 45px;
-            max-height: 45px;
-        }
-        .cart-item-details {
-            flex: 1;
-        }
-        .cart-item-name {
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-        .cart-item-price {
-            font-size: 0.75rem;
-            color: #f39c12;
             font-weight: bold;
+            transition: all 0.3s;
         }
-        .cart-qty-control {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 5px;
-        }
-        .cart-qty-btn {
-            background: #e9ecef;
-            border: none;
-            width: 26px;
-            height: 26px;
-            border-radius: 30px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .cart-item-qty {
-            width: 35px;
-            text-align: center;
-        }
-        .remove-item {
-            color: #e74c3c;
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 1.1rem;
-        }
-        .cart-total {
-            margin-top: 20px;
-            padding-top: 12px;
-            border-top: 2px dashed #ddd;
-            font-weight: 800;
-            font-size: 1.2rem;
-            display: flex;
-            justify-content: space-between;
-        }
-        .whatsapp-btn {
-            background: #25D366;
-            color: white;
-            border: none;
-            width: 100%;
-            padding: 14px;
-            border-radius: 60px;
-            font-weight: bold;
-            font-size: 1rem;
-            margin-top: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .clear-cart {
-            background: #efefef;
-            color: #2c3e50;
-            margin-top: 12px;
+        .add-to-cart:hover {
+            background: #218838;
         }
         .loading {
             text-align: center;
-            padding: 3rem;
-            font-size: 1.2rem;
-            color: #f39c12;
+            padding: 50px;
+            font-size: 18px;
+            color: #666;
         }
-        .badge-count {
-            background: #f39c12;
-            border-radius: 50px;
-            padding: 2px 8px;
-            font-size: 0.75rem;
-            font-weight: bold;
-        }
-        .footer-note {
+        .error {
             text-align: center;
-            font-size: 0.7rem;
-            margin-top: 2rem;
-            color: #6c7a8e;
+            padding: 50px;
+            color: #dc3545;
+            background: #f8d7da;
+            margin: 30px;
+            border-radius: 10px;
         }
-        button {
-            cursor: pointer;
-        }
-        .error-msg {
-            background: #fee2e2;
-            color: #b91c1c;
-            padding: 12px;
-            border-radius: 20px;
-            margin-bottom: 1rem;
+        @media (max-width: 768px) {
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 15px;
+                padding: 15px;
+            }
+            .header h1 {
+                font-size: 1.8em;
+            }
+            .search-section {
+                padding: 20px;
+            }
         }
     </style>
 </head>
 <body>
-<div class="app-header">
-    <div class="header-container">
-        <div class="logo-area">
-            <i class="fas fa-tools"></i>
-            <div>
-                <h1>Herramientas y Conexiones</h1>
-                <p>Pedidos mayoristas · Precios por cantidad</p>
-            </div>
+    <div class="container">
+        <div class="header">
+            <h1>🛠️ Catálogo HERCON</h1>
+            <p>Herramientas y Conexiones - Calidad y Precio</p>
         </div>
-        <div class="cart-summary-mobile" id="mobileCartBtn">
-            <i class="fas fa-shopping-cart"></i>
-            <span id="cartItemCountMobile">0</span>
-            <i class="fas fa-chevron-down"></i>
-        </div>
-    </div>
-</div>
 
-<div class="app-layout">
-    <!-- Sección de productos -->
-    <div class="products-section">
-        <div class="filter-bar">
+        <div class="search-section">
             <div class="search-box">
-                <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" placeholder="Buscar por nombre o código...">
-                <button id="clearSearchBtn" class="clear-search"><i class="fas fa-times-circle"></i></button>
+                <input type="text" id="searchInput" class="search-input" placeholder="🔍 Buscar por código, nombre o referencia...">
+                <button onclick="filterProducts()" class="search-btn">Buscar</button>
             </div>
-            <div class="category-filters" id="categoryContainer">
-                <!-- categorías dinámicas -->
+            <div class="stats" id="stats">
+                Cargando productos...
             </div>
         </div>
+
         <div id="productsGrid" class="products-grid">
-            <div class="loading"><i class="fas fa-spinner fa-pulse"></i> Cargando catálogo...</div>
-        </div>
-        <div class="footer-note">
-            <i class="fas fa-sync-alt"></i> Los precios y productos se actualizan semanalmente desde el archivo Excel.
-        </div>
-    </div>
-
-    <!-- Carrito lateral -->
-    <div class="cart-section" id="cartPanel">
-        <div class="cart-header">
-            <h3><i class="fas fa-shopping-cart"></i> Pedido actual</h3>
-            <button id="clearAllCartBtn" style="background:none; border:none; color:#e74c3c;"><i class="fas fa-trash-alt"></i> Vaciar</button>
-        </div>
-        <div id="cartItemsList">
-            <div style="text-align:center; color:#aaa; padding:1rem;">Aún no hay productos</div>
-        </div>
-        <div id="cartTotalContainer" class="cart-total" style="display:none;">
-            <span>Total MXN:</span>
-            <span id="cartTotal">0.00</span>
-        </div>
-        <button id="sendWhatsAppBtn" class="whatsapp-btn"><i class="fab fa-whatsapp"></i> Enviar pedido por WhatsApp</button>
-        <button id="forceReloadBtn" style="background:#eef2ff; color:#1e2a3e; margin-top: 10px;"><i class="fas fa-upload"></i> Recargar desde Excel</button>
-        <div style="margin-top: 12px; font-size:12px; text-align:center;">
-            <label style="cursor:pointer;"><i class="fas fa-file-excel"></i> Seleccionar archivo .xlsx actualizado: 
-                <input type="file" id="uploadExcel" accept=".xlsx, .xls" style="display:none;">
-                <span style="color:#f39c12;">📁 Examinar</span>
-            </label>
+            <div class="loading">
+                ⏳ Cargando catálogo de productos...
+            </div>
         </div>
     </div>
-</div>
 
-<script>
-    // ---------- ESTADO GLOBAL ----------
-    let products = [];          // array de productos { id, category, image, code, name, priceTiers }
-    let cart = {};             // key: productCode, value: { product, quantity }
-    let activeCategory = "Todos";
-    let searchTerm = "";
-    let currentFileData = null;   // para recargar
+    <script>
+        let productsData = [];
 
-    // Helper para parsear rangos tipo "1 a 5", "6 o más", "24 o más", "1 ó más"
-    function parseRange(rangeStr) {
-        if (!rangeStr || rangeStr.trim() === "") return null;
-        const str = rangeStr.toString().trim().toLowerCase();
-        // patron: 1 a 5  -> [1,5] ;  6 o más -> [6, Infinity]
-        const matchNum = str.match(/(\d+)/);
-        if (!matchNum) return null;
-        const min = parseInt(matchNum[1], 10);
-        let max = Infinity;
-        // si contiene "a" y otro número
-        const aMatch = str.match(/(\d+)\s*a\s*(\d+)/);
-        if (aMatch) {
-            return { min: parseInt(aMatch[1],10), max: parseInt(aMatch[2],10) };
-        }
-        // si contiene "o más", "o mas", "ó más"
-        if (str.includes("más") || str.includes("mas") || str.includes("ó")) {
-            return { min: min, max: Infinity };
-        }
-        // por defecto rango único: de min a infinito (precio fijo)
-        return { min: min, max: Infinity };
-    }
-
-    // Construir array de tiers desde las columnas del excel
-    function extractPriceTiers(row) {
-        const tiers = [];
-        const ranges = [
-            row["Rango de Cantidad 1"], row["Rango de Cantidad 2"], row["Rango de Cantidad 3"]
-        ];
-        const prices = [
-            parseFloat(row["Precio 1"]), parseFloat(row["Precio 2"]), parseFloat(row["Precio 3"])
-        ];
-        for (let i=0; i<3; i++) {
-            let rangeRaw = ranges[i];
-            let price = prices[i];
-            if (rangeRaw && rangeRaw.toString().trim() !== "" && !isNaN(price) && price>0) {
-                let parsed = parseRange(rangeRaw);
-                if (parsed) {
-                    tiers.push({
-                        minQty: parsed.min,
-                        maxQty: parsed.max,
-                        price: price
-                    });
-                }
-            }
-        }
-        if (tiers.length === 0 && !isNaN(prices[0]) && prices[0]>0) {
-            // Fallback: si no hay rango definido pero si precio
-            tiers.push({ minQty: 1, maxQty: Infinity, price: prices[0] });
-        }
-        // Ordenar por minQty ascendente
-        tiers.sort((a,b) => a.minQty - b.minQty);
-        return tiers;
-    }
-
-    // Obtener precio según cantidad
-    function getPriceForQuantity(quantity, tiers) {
-        if (!tiers || tiers.length===0) return 0;
-        for (let tier of tiers) {
-            if (quantity >= tier.minQty && quantity <= tier.maxQty) {
-                return tier.price;
-            }
-        }
-        // si supera el último, tomar el último (mayor rango)
-        const lastTier = tiers[tiers.length-1];
-        if (quantity > lastTier.minQty) return lastTier.price;
-        return tiers[0].price;
-    }
-
-    // Cargar y parsear excel (desde archivo o desde fetch)
-    async function loadExcelFromData(data) {
-        try {
-            const workbook = XLSX.read(data, { type: 'array' });
-            const sheet = workbook.Sheets[workbook.SheetNames[0]];
-            const rows = XLSX.utils.sheet_to_json(sheet);
-            if (!rows || rows.length === 0) throw new Error("Excel sin datos");
-            const newProducts = [];
-            const categoriesSet = new Set();
-            for (let row of rows) {
-                let category = row["Categoría"] ? row["Categoría"].toString().trim() : "Sin categoría";
-                let image = row["Imagen"] || "";
-                let code = row["Código"] ? row["Código"].toString().trim() : "";
-                let name = row["Nombre"] ? row["Nombre"].toString().trim() : "Producto";
-                if (!code || code === "") continue; // evitar filas sin código
-                const priceTiers = extractPriceTiers(row);
-                if (priceTiers.length === 0) continue;
-                newProducts.push({
-                    id: code,
-                    category: category,
-                    image: image,
-                    code: code,
-                    name: name,
-                    priceTiers: priceTiers,
-                    // precio base para vista previa
-                    getBasePrice: function(qty=1) { return getPriceForQuantity(qty, this.priceTiers); }
-                });
-                categoriesSet.add(category);
-            }
-            return { products: newProducts, categories: Array.from(categoriesSet).sort() };
-        } catch (err) {
-            console.error(err);
-            throw err;
-        }
-    }
-
-    // cargar desde fetch path por defecto
-    async function loadDefaultExcel() {
-        try {
-            const response = await fetch('base_de_precios.xlsx');
-            if (!response.ok) throw new Error("Archivo no encontrado");
-            const arrayBuffer = await response.arrayBuffer();
-            const result = await loadExcelFromData(arrayBuffer);
-            products = result.products;
-            updateCategoriesUI(result.categories);
-            filterAndRenderProducts();
-            return true;
-        } catch (err) {
-            console.warn("No se pudo cargar base_de_precios.xlsx por defecto. Usa selector manual.", err);
-            document.getElementById('productsGrid').innerHTML = `<div class="error-msg"><i class="fas fa-exclamation-triangle"></i> No se encontró el archivo Excel en el servidor. Por favor, usa el botón "Seleccionar archivo" para cargar tu catálogo actualizado (base_de_precios.xlsx).</div>`;
-            return false;
-        }
-    }
-
-    async function handleFileUpload(file) {
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = async (e) => {
+        // Cargar productos desde el archivo JSON
+        async function loadProducts() {
             try {
-                const data = e.target.result;
-                const result = await loadExcelFromData(data);
-                products = result.products;
-                updateCategoriesUI(result.categories);
-                filterAndRenderProducts();
-                // reset cart si se recarga catálogo? mejor mantener pero advertir?
-                alert(`Catálogo actualizado: ${products.length} productos cargados. El pedido actual se conserva, revisa existencias.`);
-            } catch (err) {
-                alert("Error al leer el archivo: " + err.message);
-            }
-        };
-        reader.readAsArrayBuffer(file);
-    }
-
-    // UI dinámica categorías
-    function updateCategoriesUI(categoriesList) {
-        const container = document.getElementById('categoryContainer');
-        container.innerHTML = `<div class="cat-pill ${activeCategory === 'Todos' ? 'active' : ''}" data-cat="Todos">Todos los productos</div>`;
-        categoriesList.forEach(cat => {
-            const pill = document.createElement('div');
-            pill.className = `cat-pill ${activeCategory === cat ? 'active' : ''}`;
-            pill.setAttribute('data-cat', cat);
-            pill.innerText = cat;
-            container.appendChild(pill);
-        });
-        // event listeners
-        document.querySelectorAll('.cat-pill').forEach(el => {
-            el.addEventListener('click', (e) => {
-                activeCategory = el.getAttribute('data-cat');
-                updateCategoriesUI(categoriesList);
-                filterAndRenderProducts();
-            });
-        });
-    }
-
-    function filterAndRenderProducts() {
-        let filtered = products.filter(p => {
-            const matchCat = (activeCategory === "Todos") || (p.category === activeCategory);
-            const matchSearch = searchTerm === "" || p.name.toLowerCase().includes(searchTerm.toLowerCase()) || p.code.toLowerCase().includes(searchTerm.toLowerCase());
-            return matchCat && matchSearch;
-        });
-        renderProductGrid(filtered);
-    }
-
-    function renderProductGrid(filteredProds) {
-        const grid = document.getElementById('productsGrid');
-        if (!filteredProds.length) {
-            grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:3rem;">No se encontraron productos 🔍</div>`;
-            return;
-        }
-        grid.innerHTML = '';
-        filteredProds.forEach(prod => {
-            const card = document.createElement('div');
-            card.className = 'product-card';
-            const defaultQty = 1;
-            const unitPrice = getPriceForQuantity(defaultQty, prod.priceTiers);
-            card.innerHTML = `
-                <div class="product-img">
-                    <img src="${prod.image}" alt="${prod.name}" onerror="this.src='https://placehold.co/200x200?text=Sin+Imagen'">
-                </div>
-                <div class="product-info">
-                    <div class="product-name">${escapeHtml(prod.name)}</div>
-                    <div class="product-code">Código: ${prod.code}</div>
-                    <div class="price-display" id="priceLabel-${prod.code}">$ ${unitPrice.toFixed(2)} c/u*</div>
-                    <div class="quantity-controls">
-                        <button class="qty-btn decr" data-code="${prod.code}">-</button>
-                        <input type="number" class="qty-input" id="qty-${prod.code}" value="1" min="1" step="1" style="width:70px;">
-                        <button class="qty-btn incr" data-code="${prod.code}">+</button>
+                const response = await fetch('precios.json');
+                if (!response.ok) {
+                    throw new Error(`Error al cargar precios.json: ${response.status}`);
+                }
+                const data = await response.json();
+                productsData = data;
+                displayProducts(productsData);
+                updateStats(productsData.length);
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('productsGrid').innerHTML = `
+                    <div class="error">
+                        ❌ Error al cargar los productos: ${error.message}<br><br>
+                        <strong>Solución:</strong> Asegúrate de que el archivo <code>precios.json</code> exista en el repositorio.
                     </div>
-                    <button class="add-to-cart-btn" data-code="${prod.code}"><i class="fas fa-cart-plus"></i> Agregar al pedido</button>
-                </div>
-            `;
-            grid.appendChild(card);
-            // Actualizar precio dinámico al cambiar cantidad
-            const qtyInput = card.querySelector(`.qty-input`);
-            const updatePriceDisplay = () => {
-                let qty = parseInt(qtyInput.value, 10);
-                if (isNaN(qty) || qty < 1) qty = 1;
-                const newPrice = getPriceForQuantity(qty, prod.priceTiers);
-                const priceSpan = document.getElementById(`priceLabel-${prod.code}`);
-                if(priceSpan) priceSpan.innerText = `$ ${newPrice.toFixed(2)} c/u*`;
-            };
-            qtyInput.addEventListener('input', updatePriceDisplay);
-            const decrBtn = card.querySelector('.decr');
-            const incrBtn = card.querySelector('.incr');
-            decrBtn.addEventListener('click', () => {
-                let val = parseInt(qtyInput.value,10);
-                if (val > 1) qtyInput.value = val-1;
-                updatePriceDisplay();
-            });
-            incrBtn.addEventListener('click', () => {
-                let val = parseInt(qtyInput.value,10);
-                qtyInput.value = val+1;
-                updatePriceDisplay();
-            });
-            // botón agregar
-            const addBtn = card.querySelector('.add-to-cart-btn');
-            addBtn.addEventListener('click', () => {
-                let qty = parseInt(qtyInput.value,10);
-                if (isNaN(qty) || qty<1) qty = 1;
-                addToCart(prod, qty);
-            });
-        });
-    }
-
-    function addToCart(product, quantity) {
-        const code = product.code;
-        const currentQty = cart[code] ? cart[code].quantity : 0;
-        const newQty = currentQty + quantity;
-        const unitPrice = getPriceForQuantity(newQty, product.priceTiers);
-        cart[code] = {
-            product: product,
-            quantity: newQty,
-            // guardamos referencia pero el precio se calcula cada vez
-        };
-        renderCart();
-    }
-
-    function updateCartItemQuantity(code, newQuantity) {
-        if (newQuantity <= 0) {
-            delete cart[code];
-        } else {
-            if (cart[code]) {
-                cart[code].quantity = newQuantity;
+                `;
+                document.getElementById('stats').innerHTML = '❌ Error al cargar datos';
             }
         }
-        renderCart();
-    }
 
-    function renderCart() {
-        const container = document.getElementById('cartItemsList');
-        const totalContainer = document.getElementById('cartTotalContainer');
-        const totalSpan = document.getElementById('cartTotal');
-        let total = 0;
-        const cartArray = Object.values(cart);
-        if (cartArray.length === 0) {
-            container.innerHTML = `<div style="text-align:center; color:#aaa; padding:1rem;">🛒 Pedido vacío</div>`;
-            totalContainer.style.display = 'none';
-            document.getElementById('cartItemCountMobile').innerText = '0';
-            return;
-        }
-        let html = '';
-        for (let item of cartArray) {
-            const prod = item.product;
-            const qty = item.quantity;
-            const unitPrice = getPriceForQuantity(qty, prod.priceTiers);
-            const subtotal = unitPrice * qty;
-            total += subtotal;
-            html += `
-                <div class="cart-item" data-code="${prod.code}">
-                    <div class="cart-item-img"><img src="${prod.image}" onerror="this.src='https://placehold.co/50x50?text=img'"></div>
-                    <div class="cart-item-details">
-                        <div class="cart-item-name">${escapeHtml(prod.name)}</div>
-                        <div class="cart-item-price">$${unitPrice.toFixed(2)} c/u</div>
-                        <div class="cart-qty-control">
-                            <button class="cart-qty-btn cart-decr" data-code="${prod.code}">-</button>
-                            <span class="cart-item-qty" id="cartQty-${prod.code}">${qty}</span>
-                            <button class="cart-qty-btn cart-incr" data-code="${prod.code}">+</button>
-                            <button class="remove-item" data-code="${prod.code}"><i class="fas fa-trash-alt"></i></button>
-                        </div>
+        function displayProducts(products) {
+            const grid = document.getElementById('productsGrid');
+            
+            if (!products || products.length === 0) {
+                grid.innerHTML = '<div class="loading">😕 No se encontraron productos. Intenta con otra búsqueda.</div>';
+                return;
+            }
+
+            grid.innerHTML = products.map(product => `
+                <div class="product-card">
+                    <div class="product-image">
+                        ${getIconForProduct(product.NOMBRE || product.nombre || '')}
                     </div>
-                    <div><strong>$${subtotal.toFixed(2)}</strong></div>
+                    <div class="product-info">
+                        <div class="product-code">Código: ${product.CODIGO || product.codigo || 'N/A'}</div>
+                        <div class="product-name">${product.NOMBRE || product.nombre || 'Sin nombre'}</div>
+                        <div class="product-price">$${formatPrice(product.PRECIO || product.precio || 0)}</div>
+                        <div class="product-stock">✅ Disponible</div>
+                        <button class="add-to-cart" onclick="showProductInfo('${(product.CODIGO || product.codigo || '').replace(/'/g, "\\'")}')">
+                            📞 Solicitar Cotización
+                        </button>
+                    </div>
                 </div>
-            `;
+            `).join('');
         }
-        container.innerHTML = html;
-        totalSpan.innerText = total.toFixed(2);
-        totalContainer.style.display = 'flex';
-        document.getElementById('cartItemCountMobile').innerText = cartArray.length;
-        // Eventos del carrito
-        document.querySelectorAll('.cart-decr').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const code = btn.getAttribute('data-code');
-                if (cart[code]) {
-                    let newQ = cart[code].quantity - 1;
-                    updateCartItemQuantity(code, newQ);
-                }
-            });
-        });
-        document.querySelectorAll('.cart-incr').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const code = btn.getAttribute('data-code');
-                if (cart[code]) {
-                    let newQ = cart[code].quantity + 1;
-                    updateCartItemQuantity(code, newQ);
-                }
-            });
-        });
-        document.querySelectorAll('.remove-item').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const code = btn.getAttribute('data-code');
-                delete cart[code];
-                renderCart();
-            });
-        });
-    }
 
-    function clearCart() {
-        cart = {};
-        renderCart();
-    }
-
-    function enviarWhatsApp() {
-        if (Object.keys(cart).length === 0) {
-            alert("No hay productos en el pedido.");
-            return;
+        function getIconForProduct(name) {
+            const nameLower = (name || '').toLowerCase();
+            if (nameLower.includes('taladro') || nameLower.includes('perforador')) return '🔨';
+            if (nameLower.includes('sierra')) return '⚙️';
+            if (nameLower.includes('llave')) return '🔧';
+            if (nameLower.includes('martillo')) return '🔨';
+            if (nameLower.includes('pintura')) return '🎨';
+            return '🛠️';
         }
-        let message = "🛠️ *PEDIDO HERRAMIENTAS Y CONEXIONES*%0A";
-        let totalGeneral = 0;
-        for (let item of Object.values(cart)) {
-            const prod = item.product;
-            const qty = item.quantity;
-            const unitPrice = getPriceForQuantity(qty, prod.priceTiers);
-            const subtotal = unitPrice * qty;
-            totalGeneral += subtotal;
-            message += `%0A📌 *${escapeWhats(prod.name)}*%0ACódigo: ${prod.code}%0ACantidad: ${qty} x $${unitPrice.toFixed(2)} = $${subtotal.toFixed(2)}%0A`;
+
+        function formatPrice(price) {
+            if (typeof price === 'string') {
+                price = parseFloat(price.replace(/[$,]/g, ''));
+            }
+            return isNaN(price) ? '0' : price.toLocaleString('es-MX', {minimumFractionDigits: 2, maximumFractionDigits: 2});
         }
-        message += `%0A💰 *TOTAL: $${totalGeneral.toFixed(2)} MXN*%0A%0A📦 Pedido generado desde la app.%0A¡Gracias!`;
-        const phone = "527731151890"; // México +52
-        const url = `https://wa.me/${phone}?text=${message}`;
-        window.open(url, '_blank');
-    }
 
-    function escapeHtml(str) {
-        if (!str) return "";
-        return str.replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
-        }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
-            return c;
+        function filterProducts() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+            
+            if (!searchTerm) {
+                displayProducts(productsData);
+                updateStats(productsData.length);
+                return;
+            }
+
+            const filtered = productsData.filter(product => {
+                const codigo = (product.CODIGO || product.codigo || '').toLowerCase();
+                const nombre = (product.NOMBRE || product.nombre || '').toLowerCase();
+                return codigo.includes(searchTerm) || nombre.includes(searchTerm);
+            });
+            
+            displayProducts(filtered);
+            updateStats(filtered.length, searchTerm);
+        }
+
+        function updateStats(count, searchTerm = '') {
+            const statsDiv = document.getElementById('stats');
+            if (searchTerm) {
+                statsDiv.innerHTML = `📊 Mostrando ${count} producto(s) para "${searchTerm}" | Total en catálogo: ${productsData.length}`;
+            } else {
+                statsDiv.innerHTML = `📊 Total de productos disponibles: ${count}`;
+            }
+        }
+
+        function showProductInfo(productCode) {
+            const product = productsData.find(p => (p.CODIGO || p.codigo) === productCode);
+            if (product) {
+                alert(`📞 Para cotizar o comprar:\n\nCódigo: ${product.CODIGO || product.codigo}\nProducto: ${product.NOMBRE || product.nombre}\nPrecio: $${formatPrice(product.PRECIO || product.precio)}\n\nContáctanos:\n📱 WhatsApp: [Tu número]\n📧 Email: [tu@email.com]`);
+            }
+        }
+
+        // Agregar evento de búsqueda al presionar Enter
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                filterProducts();
+            }
         });
-    }
-    function escapeWhats(str) {
-        return str.replace(/[&<>]/g, '').substring(0, 60);
-    }
 
-    // Inicialización y eventos
-    document.getElementById('clearSearchBtn').addEventListener('click', () => {
-        document.getElementById('searchInput').value = '';
-        searchTerm = '';
-        filterAndRenderProducts();
-    });
-    document.getElementById('searchInput').addEventListener('input', (e) => {
-        searchTerm = e.target.value;
-        filterAndRenderProducts();
-    });
-    document.getElementById('sendWhatsAppBtn').addEventListener('click', enviarWhatsApp);
-    document.getElementById('clearAllCartBtn').addEventListener('click', clearCart);
-    document.getElementById('forceReloadBtn').addEventListener('click', async () => {
-        await loadDefaultExcel();
-    });
-    const fileInput = document.getElementById('uploadExcel');
-    document.querySelector('label[for="uploadExcel"]').addEventListener('click', () => fileInput.click());
-    fileInput.addEventListener('change', (e) => {
-        if (e.target.files.length) handleFileUpload(e.target.files[0]);
-    });
-    // Mobile cart toggle
-    document.getElementById('mobileCartBtn').addEventListener('click', () => {
-        document.getElementById('cartPanel').scrollIntoView({ behavior: 'smooth' });
-    });
-
-    // Cargar catálogo al inicio
-    (async () => {
-        await loadDefaultExcel();
-    })();
-</script>
+        // Cargar productos al iniciar
+        loadProducts();
+    </script>
 </body>
 </html>
-```
