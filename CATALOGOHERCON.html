@@ -17,380 +17,306 @@
     --gris-bg:  #f2f2f2;
     --borde:    #d8d8d8;
     --blanco:   #ffffff;
-    --acento:   var(--naranja);
     --shadow:   0 2px 12px rgba(0,0,0,.13);
   }
-
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Source Sans 3', sans-serif; background: var(--gris-bg); color: var(--gris-os); min-height: 100vh; }
 
-  body {
-    font-family: 'Source Sans 3', sans-serif;
-    background: var(--gris-bg);
-    color: var(--gris-os);
-    min-height: 100vh;
+  /* ── STICKY WRAPPER: header + tabs siempre visibles ── */
+  .sticky-top {
+    position: sticky;
+    top: 0;
+    z-index: 100;
   }
 
   /* ── HEADER ── */
   header {
     background: var(--gris-os);
-    position: sticky; top: 0; z-index: 100;
-    box-shadow: 0 3px 16px rgba(0,0,0,.5);
+    box-shadow: 0 2px 10px rgba(0,0,0,.5);
   }
   .header-inner {
     max-width: 1280px; margin: 0 auto;
     padding: 10px 20px;
-    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
   }
-  .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; flex-shrink: 0; }
-  .brand-logo {
-    height: 52px; width: auto; max-width: 130px;
-    object-fit: contain; border-radius: 6px;
-  }
+  .brand { display: flex; align-items: center; gap: 11px; text-decoration: none; flex-shrink: 0; }
+  .brand-logo { height: 50px; width: auto; max-width: 130px; object-fit: contain; border-radius: 5px; }
   .brand-text { line-height: 1; }
-  .brand-name {
-    font-family: 'Oswald', sans-serif;
-    font-size: 1.15rem; font-weight: 700;
-    color: var(--blanco); letter-spacing: .5px;
-  }
-  .brand-sub {
-    font-size: .68rem; color: var(--naranja);
-    font-weight: 600; letter-spacing: 2px; text-transform: uppercase;
-    margin-top: 3px; display: block;
-  }
-  .search-wrap {
-    flex: 1; min-width: 180px;
-    position: relative;
-  }
+  .brand-name { font-family: 'Oswald', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--blanco); letter-spacing: .4px; }
+  .brand-sub  { font-size: .65rem; color: var(--naranja); font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-top: 3px; display: block; }
+  .search-wrap { flex: 1; min-width: 170px; position: relative; }
   .search-wrap input {
-    width: 100%; padding: 9px 16px 9px 40px;
+    width: 100%; padding: 8px 14px 8px 38px;
     border: 2px solid transparent; border-radius: 7px;
     background: #333; color: var(--blanco);
-    font-size: .95rem; font-family: inherit;
-    outline: none; transition: background .2s, border-color .2s;
+    font-size: .93rem; font-family: inherit; outline: none;
+    transition: background .2s, border-color .2s;
   }
   .search-wrap input::placeholder { color: #888; }
   .search-wrap input:focus { background: #3a3a3a; border-color: var(--verde); }
-  .search-icon {
-    position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
-    color: #888; pointer-events: none;
-  }
+  .search-icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: #888; pointer-events: none; }
   .cart-btn {
     position: relative; cursor: pointer;
     background: var(--naranja); border: none; border-radius: 8px;
-    padding: 9px 18px; color: var(--blanco);
-    font-family: 'Oswald', sans-serif; font-size: 1rem; font-weight: 600;
-    display: flex; align-items: center; gap: 8px;
+    padding: 9px 16px; color: var(--blanco);
+    font-family: 'Oswald', sans-serif; font-size: .98rem; font-weight: 600;
+    display: flex; align-items: center; gap: 7px;
     transition: background .2s, transform .1s; white-space: nowrap;
   }
   .cart-btn:hover { background: var(--naranja-d); transform: translateY(-1px); }
   .cart-badge {
     position: absolute; top: -6px; right: -6px;
     background: var(--amarillo); color: var(--gris-os);
-    font-size: .68rem; font-weight: 800; font-family: inherit;
+    font-size: .66rem; font-weight: 800;
     width: 20px; height: 20px; border-radius: 50%;
-    align-items: center; justify-content: center;
-    display: none;
+    align-items: center; justify-content: center; display: none;
   }
 
   /* ── CATEGORY TABS ── */
   .tabs-outer {
     background: var(--gris-m);
     border-bottom: 3px solid var(--verde);
-    overflow-x: auto;
-    scrollbar-width: none;
+    overflow-x: auto; scrollbar-width: none;
   }
   .tabs-outer::-webkit-scrollbar { display: none; }
   .tabs-inner {
     max-width: 1280px; margin: 0 auto;
-    display: flex; gap: 0; padding: 0 12px;
+    display: flex; padding: 0 10px;
     min-width: max-content;
   }
   .tab {
-    font-family: 'Oswald', sans-serif; font-size: .82rem; font-weight: 500;
-    padding: 11px 15px; cursor: pointer; white-space: nowrap;
+    font-family: 'Oswald', sans-serif; font-size: .8rem; font-weight: 500;
+    padding: 10px 14px; cursor: pointer; white-space: nowrap;
     color: #999; border: none; background: transparent;
     border-bottom: 3px solid transparent; margin-bottom: -3px;
-    transition: color .2s, border-color .2s; letter-spacing: .5px;
+    transition: color .15s, border-color .15s; letter-spacing: .4px;
   }
   .tab:hover { color: var(--blanco); }
   .tab.active { color: var(--amarillo); border-bottom-color: var(--amarillo); }
 
-  /* ── MAIN GRID ── */
-  .main { max-width: 1280px; margin: 0 auto; padding: 22px 20px; }
-
+  /* ── MAIN ── */
+  .main { max-width: 1280px; margin: 0 auto; padding: 20px 18px; }
   .section-title {
-    font-family: 'Oswald', sans-serif; font-size: 1.35rem; font-weight: 700;
-    color: var(--gris-os); margin-bottom: 18px;
+    font-family: 'Oswald', sans-serif; font-size: 1.3rem; font-weight: 700;
+    color: var(--gris-os); margin-bottom: 16px;
     display: flex; align-items: center; gap: 10px;
   }
-  .section-title::after {
-    content: ''; flex: 1; height: 2px;
-    background: linear-gradient(to right, var(--verde), transparent);
-  }
-  .product-count { font-size: .82rem; color: #777; font-family: 'Source Sans 3', sans-serif; font-weight: 400; }
+  .section-title::after { content: ''; flex: 1; height: 2px; background: linear-gradient(to right, var(--verde), transparent); }
+  .product-count { font-size: .8rem; color: #888; font-family: 'Source Sans 3', sans-serif; font-weight: 400; }
 
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-    gap: 16px;
-  }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 15px; }
 
-  /* ── PRODUCT CARD ── */
+  /* ── CARD ── */
   .card {
-    background: var(--blanco);
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: var(--shadow);
-    display: flex; flex-direction: column;
-    transition: transform .2s, box-shadow .2s;
-    border: 2px solid transparent;
+    background: var(--blanco); border-radius: 10px; overflow: hidden;
+    box-shadow: var(--shadow); display: flex; flex-direction: column;
+    transition: transform .2s, box-shadow .2s; border: 2px solid transparent;
   }
-  .card:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(0,0,0,.15); }
+  .card:hover { transform: translateY(-3px); box-shadow: 0 8px 26px rgba(0,0,0,.14); }
   .card.in-cart { border-color: var(--verde); }
 
-  .card-img-wrap {
-    position: relative; aspect-ratio: 1 / 1;
-    background: #f8f8f8; overflow: hidden;
-  }
-  .card-img {
-    width: 100%; height: 100%; object-fit: contain;
-    padding: 8px; transition: transform .3s;
-  }
+  .card-img-wrap { position: relative; aspect-ratio: 1/1; background: #f8f8f8; overflow: hidden; }
+  .card-img { width: 100%; height: 100%; object-fit: contain; padding: 8px; transition: transform .3s; }
   .card:hover .card-img { transform: scale(1.05); }
-  .card-img.error { opacity: 0; }
-  .img-placeholder {
-    position: absolute; inset: 0;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 2.5rem; color: #ccc;
-  }
+  .card-img.err { opacity: 0; }
+  .img-placeholder { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 2.4rem; color: #ccc; }
   .cat-badge {
     position: absolute; top: 8px; left: 8px;
     background: var(--naranja); color: var(--blanco);
-    font-size: .62rem; font-weight: 700; font-family: 'Oswald', sans-serif;
-    padding: 3px 8px; border-radius: 4px; letter-spacing: .5px;
-    box-shadow: 0 1px 4px rgba(0,0,0,.2);
+    font-size: .6rem; font-weight: 700; font-family: 'Oswald', sans-serif;
+    padding: 3px 7px; border-radius: 4px; letter-spacing: .4px;
   }
 
-  .card-body { padding: 12px; flex: 1; display: flex; flex-direction: column; }
-  .card-code { font-size: .68rem; color: #aaa; margin-bottom: 3px; font-weight: 600; }
-  .card-name {
-    font-size: .88rem; font-weight: 600; line-height: 1.35;
-    color: var(--gris-os); margin-bottom: 8px; flex: 1;
-  }
+  .card-body { padding: 11px; flex: 1; display: flex; flex-direction: column; }
+  .card-code { font-size: .66rem; color: #bbb; margin-bottom: 3px; font-weight: 600; }
+  .card-name { font-size: .87rem; font-weight: 600; line-height: 1.35; color: var(--gris-os); margin-bottom: 8px; flex: 1; }
 
-  .price-table { font-size: .76rem; color: #555; margin-bottom: 10px; }
+  .price-table { font-size: .74rem; margin-bottom: 9px; }
   .price-row { display: flex; justify-content: space-between; padding: 2px 0; }
-  .price-row .rng { color: #999; }
+  .price-row .rng { color: #aaa; }
   .price-row .prc { font-weight: 700; color: var(--naranja-d); }
-  .price-row.best .prc { color: var(--verde-d); font-size: .82rem; }
+  .price-row.best .prc { color: var(--verde-d); }
 
   /* ── QTY CONTROL ── */
-  .qty-control {
-    display: flex; align-items: center;
-    border: 2px solid var(--borde); border-radius: 8px; overflow: hidden;
-  }
+  .qty-control { display: flex; align-items: center; border: 2px solid var(--borde); border-radius: 8px; overflow: hidden; }
   .qty-btn {
     width: 36px; height: 36px; border: none; cursor: pointer;
     background: #f0f0f0; color: var(--gris-os);
-    font-size: 1.2rem; font-weight: 700; display: flex;
-    align-items: center; justify-content: center;
+    font-size: 1.2rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
     transition: background .15s, color .15s; flex-shrink: 0;
+    /* prevent double-click text selection */
+    user-select: none; -webkit-user-select: none;
   }
   .qty-btn:hover { background: var(--naranja); color: var(--blanco); }
+  /* The input stores the "pending" qty – source of truth until Add is clicked */
   .qty-input {
     flex: 1; border: none; outline: none; text-align: center;
     font-size: 1rem; font-weight: 700; font-family: inherit;
     color: var(--gris-os); background: var(--blanco);
-    min-width: 0; padding: 0 2px; height: 36px;
-    cursor: text;
+    min-width: 0; padding: 0 2px; height: 36px; cursor: text;
   }
   .qty-input::-webkit-outer-spin-button,
   .qty-input::-webkit-inner-spin-button { -webkit-appearance: none; }
   .qty-input[type=number] { -moz-appearance: textfield; }
 
   .add-btn {
-    margin-top: 8px; width: 100%;
-    padding: 9px; border: none; border-radius: 7px;
+    margin-top: 8px; width: 100%; padding: 9px; border: none; border-radius: 7px;
     background: var(--naranja); color: var(--blanco);
-    font-family: 'Oswald', sans-serif; font-size: .95rem; font-weight: 600;
-    cursor: pointer; letter-spacing: .5px;
-    transition: background .2s, transform .1s;
+    font-family: 'Oswald', sans-serif; font-size: .93rem; font-weight: 600;
+    cursor: pointer; letter-spacing: .4px; transition: background .2s, transform .1s;
   }
   .add-btn:hover { background: var(--naranja-d); }
-  .add-btn.added { background: var(--verde); }
+  .add-btn.added { background: var(--verde-d); }
   .add-btn:active { transform: scale(.97); }
 
   /* ── EMPTY / LOADING ── */
-  .empty {
-    grid-column: 1 / -1; text-align: center;
-    padding: 60px 20px; color: #aaa; font-size: 1rem;
-  }
+  .empty { grid-column: 1/-1; text-align: center; padding: 60px 20px; color: #bbb; font-size: 1rem; }
   .empty svg { display: block; margin: 0 auto 12px; opacity: .3; }
 
   /* ── CART DRAWER ── */
-  .overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,.55);
-    z-index: 200; display: none; cursor: pointer;
-  }
+  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 200; display: none; }
+  .overlay.open { display: block; }
   .drawer {
     position: fixed; right: 0; top: 0; bottom: 0; width: 420px; max-width: 100%;
     background: var(--blanco); z-index: 201;
     display: flex; flex-direction: column;
-    transform: translateX(100%); transition: transform .3s ease;
+    transform: translateX(100%); transition: transform .28s ease;
     box-shadow: -4px 0 32px rgba(0,0,0,.2);
   }
   .drawer.open { transform: translateX(0); }
-  .overlay.open { display: block; }
 
   .drawer-head {
     background: var(--gris-os); color: var(--blanco);
-    padding: 16px 20px; display: flex; align-items: center; justify-content: space-between;
-    border-bottom: 3px solid var(--verde);
+    padding: 14px 18px; display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 3px solid var(--verde); flex-shrink: 0;
   }
-  .drawer-title {
-    font-family: 'Oswald', sans-serif; font-size: 1.15rem; font-weight: 700;
-    letter-spacing: .5px;
-  }
+  .drawer-title { font-family: 'Oswald', sans-serif; font-size: 1.1rem; font-weight: 700; letter-spacing: .5px; }
   .close-btn {
     background: none; border: none; color: #aaa;
     font-size: 1.6rem; cursor: pointer; line-height: 1;
-    padding: 2px 6px; border-radius: 4px; transition: color .2s, background .2s;
+    padding: 2px 6px; border-radius: 4px; transition: color .2s;
   }
-  .close-btn:hover { color: var(--blanco); background: rgba(255,255,255,.1); }
+  .close-btn:hover { color: var(--blanco); }
 
-  .drawer-body { flex: 1; overflow-y: auto; padding: 12px 16px; }
-  .cart-empty { text-align: center; padding: 60px 20px; color: #bbb; font-size: .95rem; }
+  .drawer-body { flex: 1; overflow-y: auto; padding: 10px 14px; }
+  .cart-empty { text-align: center; padding: 50px 20px; color: #bbb; font-size: .93rem; }
 
-  .cart-item {
-    display: flex; gap: 12px; align-items: flex-start;
-    padding: 12px 0; border-bottom: 1px solid #eee;
-  }
-  .cart-item-img {
-    width: 54px; height: 54px; object-fit: contain;
-    border-radius: 6px; background: #f5f5f5; border: 1px solid var(--borde);
-    flex-shrink: 0;
-  }
+  .cart-item { display: flex; gap: 11px; align-items: flex-start; padding: 11px 0; border-bottom: 1px solid #eee; }
+  .cart-item-img { width: 52px; height: 52px; object-fit: contain; border-radius: 6px; background: #f5f5f5; border: 1px solid var(--borde); flex-shrink: 0; }
   .cart-item-info { flex: 1; min-width: 0; }
-  .cart-item-name { font-size: .84rem; font-weight: 600; line-height: 1.3; }
-  .cart-item-code { font-size: .7rem; color: #aaa; }
-  .cart-item-price { font-size: .78rem; color: var(--naranja-d); font-weight: 700; margin-top: 2px; }
-  .cart-item-controls {
-    display: flex; align-items: center; gap: 6px; margin-top: 7px;
-  }
-  .ci-qty-btn {
+  .cart-item-name { font-size: .83rem; font-weight: 600; line-height: 1.3; }
+  .cart-item-code { font-size: .68rem; color: #bbb; }
+  .cart-item-price { font-size: .77rem; color: var(--naranja-d); font-weight: 700; margin-top: 2px; }
+  .cart-item-controls { display: flex; align-items: center; gap: 5px; margin-top: 6px; }
+  .ci-btn {
     width: 26px; height: 26px; border: 1px solid var(--borde);
     border-radius: 5px; background: #f5f5f5; cursor: pointer;
     font-size: .95rem; font-weight: 700;
     display: flex; align-items: center; justify-content: center;
-    transition: background .15s;
+    transition: background .15s; user-select: none; -webkit-user-select: none;
   }
-  .ci-qty-btn:hover { background: var(--naranja); color: var(--blanco); border-color: var(--naranja); }
-  .ci-qty-input {
-    width: 46px; height: 26px; border: 1px solid var(--borde); border-radius: 5px;
+  .ci-btn:hover { background: var(--naranja); color: var(--blanco); border-color: var(--naranja); }
+  .ci-inp {
+    width: 48px; height: 26px; border: 1px solid var(--borde); border-radius: 5px;
     text-align: center; font-size: .88rem; font-weight: 700; font-family: inherit;
     outline: none; background: var(--blanco);
   }
-  .ci-qty-input:focus { border-color: var(--verde); }
-  .ci-qty-input::-webkit-outer-spin-button,
-  .ci-qty-input::-webkit-inner-spin-button { -webkit-appearance: none; }
-  .ci-qty-input[type=number] { -moz-appearance: textfield; }
-  .ci-del {
-    background: none; border: none; color: #ccc; cursor: pointer;
-    font-size: 1.1rem; padding: 0 4px; transition: color .2s; margin-left: auto;
-  }
+  .ci-inp:focus { border-color: var(--verde); }
+  .ci-inp::-webkit-outer-spin-button, .ci-inp::-webkit-inner-spin-button { -webkit-appearance: none; }
+  .ci-inp[type=number] { -moz-appearance: textfield; }
+  .ci-del { background: none; border: none; color: #ccc; cursor: pointer; font-size: 1rem; padding: 0 3px; margin-left: auto; transition: color .15s; }
   .ci-del:hover { color: #e53935; }
 
-  .drawer-foot {
-    padding: 14px 20px;
-    border-top: 2px solid #eee;
-    background: #fafafa;
-  }
-  .cart-total {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 12px;
-  }
-  .cart-total-label { font-family: 'Oswald', sans-serif; font-size: .95rem; color: #666; }
-  .cart-total-val { font-family: 'Oswald', sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--verde-d); }
-
+  .drawer-foot { padding: 13px 18px; border-top: 2px solid #eee; background: #fafafa; flex-shrink: 0; }
+  .cart-total { display: flex; justify-content: space-between; align-items: center; margin-bottom: 11px; }
+  .cart-total-label { font-family: 'Oswald', sans-serif; font-size: .9rem; color: #777; }
+  .cart-total-val { font-family: 'Oswald', sans-serif; font-size: 1.45rem; font-weight: 700; color: var(--verde-d); }
   .wa-btn {
-    width: 100%; padding: 13px;
-    background: #25d366; color: var(--blanco); border: none; border-radius: 8px;
+    width: 100%; padding: 13px; background: #25d366; color: var(--blanco);
+    border: none; border-radius: 8px;
     font-family: 'Oswald', sans-serif; font-size: 1.05rem; font-weight: 700;
-    cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
-    letter-spacing: .5px; transition: background .2s, transform .1s;
+    cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 9px;
+    letter-spacing: .4px; transition: background .2s, transform .1s;
   }
   .wa-btn:hover { background: #1ebe5d; transform: translateY(-1px); }
   .wa-btn:active { transform: scale(.98); }
-
+  .continue-btn {
+    width: 100%; margin-top: 8px; padding: 10px;
+    background: var(--gris-os); color: var(--blanco);
+    border: none; border-radius: 8px;
+    font-family: 'Oswald', sans-serif; font-size: .95rem; font-weight: 600;
+    cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+    letter-spacing: .4px; transition: background .2s;
+  }
+  .continue-btn:hover { background: #333; }
   .clear-btn {
-    width: 100%; margin-top: 8px; padding: 9px;
+    width: 100%; margin-top: 6px; padding: 8px;
     background: transparent; color: #bbb; border: 1px solid #e8e8e8;
-    border-radius: 8px; cursor: pointer; font-family: inherit; font-size: .85rem;
+    border-radius: 8px; cursor: pointer; font-family: inherit; font-size: .82rem;
     transition: background .15s, color .15s, border-color .15s;
   }
   .clear-btn:hover { background: #fff0f0; color: #e53935; border-color: #e53935; }
 
   /* ── TOAST ── */
   .toast {
-    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
+    position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%) translateY(80px);
     background: var(--gris-os); color: var(--blanco);
-    padding: 10px 22px; border-radius: 24px; font-size: .88rem;
-    box-shadow: 0 4px 20px rgba(0,0,0,.3); z-index: 300;
-    transition: transform .3s ease; white-space: nowrap;
-    border-left: 4px solid var(--verde);
+    padding: 9px 20px; border-radius: 22px; font-size: .86rem;
+    box-shadow: 0 4px 18px rgba(0,0,0,.28); z-index: 400;
+    transition: transform .28s ease; white-space: nowrap;
+    border-left: 4px solid var(--verde); pointer-events: none;
   }
   .toast.show { transform: translateX(-50%) translateY(0); }
 
   /* ── SKELETON ── */
   @keyframes shimmer { 0%{background-position:-400px 0} 100%{background-position:400px 0} }
   .skeleton { border-radius: 10px; overflow: hidden; background: var(--blanco); box-shadow: var(--shadow); }
-  .sk-img { height: 180px; background: linear-gradient(90deg,#eee 25%,#f8f8f8 50%,#eee 75%); background-size: 800px 100%; animation: shimmer 1.3s infinite; }
-  .sk-body { padding: 12px; }
+  .sk-img  { height: 175px; background: linear-gradient(90deg,#eee 25%,#f8f8f8 50%,#eee 75%); background-size: 800px 100%; animation: shimmer 1.3s infinite; }
+  .sk-body { padding: 11px; }
   .sk-line { height: 10px; border-radius: 4px; margin-bottom: 8px; background: linear-gradient(90deg,#eee 25%,#f8f8f8 50%,#eee 75%); background-size: 800px 100%; animation: shimmer 1.3s infinite; }
-  .sk-line.short { width: 50%; }
+  .sk-line.s { width: 50%; }
 
   /* ── RESPONSIVE ── */
   @media (max-width: 640px) {
-    .grid { grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 12px; }
-    .header-inner { padding: 8px 12px; gap: 10px; }
+    .grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 11px; }
+    .header-inner { padding: 8px 12px; gap: 9px; }
     .search-wrap { order: 3; flex-basis: 100%; }
     .drawer { width: 100%; }
     .brand-name { font-size: .95rem; }
-    .brand-logo { height: 44px; }
+    .brand-logo { height: 42px; }
   }
 </style>
 </head>
 <body>
 
-<!-- Header -->
-<header>
-  <div class="header-inner">
-    <a class="brand" href="https://www.herramientasyconexiones.com/" target="_blank">
-      <img class="brand-logo" src="logo_real.png" alt="Herramientas y Conexiones"
-           onerror="this.style.display='none'">
-      <div class="brand-text">
-        <div class="brand-name">Herramientas y Conexiones</div>
-        <span class="brand-sub">Catálogo de Pedidos</span>
+<!-- ── STICKY WRAPPER: header + tabs juntos ── -->
+<div class="sticky-top">
+  <header>
+    <div class="header-inner">
+      <a class="brand" href="https://www.herramientasyconexiones.com/" target="_blank">
+        <img class="brand-logo" src="logo_real.png" alt="HyC" onerror="this.style.display='none'">
+        <div class="brand-text">
+          <div class="brand-name">Herramientas y Conexiones</div>
+          <span class="brand-sub">Catálogo de Pedidos</span>
+        </div>
+      </a>
+      <div class="search-wrap">
+        <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="searchInput" placeholder="Buscar por nombre o código…" autocomplete="off">
       </div>
-    </a>
-
-    <div class="search-wrap">
-      <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input type="text" id="searchInput" placeholder="Buscar por nombre o código…" autocomplete="off">
+      <button class="cart-btn" id="cartBtn" onclick="openDrawer()">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        Mi Pedido
+        <span class="cart-badge" id="cartBadge">0</span>
+      </button>
     </div>
-
-    <button class="cart-btn" onclick="toggleDrawer()">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-      Mi Pedido
-      <span class="cart-badge" id="cartBadge">0</span>
-    </button>
+  </header>
+  <div class="tabs-outer">
+    <div class="tabs-inner" id="tabs"></div>
   </div>
-</header>
-
-<!-- Category tabs -->
-<div class="tabs-outer">
-  <div class="tabs-inner" id="tabs"></div>
 </div>
+<!-- ── END STICKY WRAPPER ── -->
 
 <!-- Main grid -->
 <div class="main">
@@ -418,8 +344,12 @@
       <span class="cart-total-val" id="cartTotal">$0.00</span>
     </div>
     <button class="wa-btn" onclick="sendWhatsApp()">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
       Enviar Pedido por WhatsApp
+    </button>
+    <button class="continue-btn" onclick="closeDrawer()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+      Seguir Comprando
     </button>
     <button class="clear-btn" onclick="clearCart()">🗑 Limpiar pedido</button>
   </div>
@@ -429,15 +359,31 @@
 <div class="toast" id="toast"></div>
 
 <script>
-const DATA_URL  = 'basedeprecios.json';
-const WA_PHONE  = '527731511890';
+// ─────────────────────────────────────────────────────────────────────────────
+// CONFIG
+// ─────────────────────────────────────────────────────────────────────────────
+const DATA_URL = 'basedeprecios.json';
+const WA_PHONE = '527731511890';
 
-let products   = [];
-let activeTab  = 'Todos';
-let cart       = {};
-let searchTerm = '';
+// ─────────────────────────────────────────────────────────────────────────────
+// STATE
+// Regla fundamental: el carrito (cart{}) es la ÚNICA fuente de verdad para
+// cantidades. Los inputs de las tarjetas son solo "pendientes" hasta que el
+// usuario presiona Agregar. Se guardan por separado en pendingQty{} para que
+// cambiar de categoría NO los borre.
+// ─────────────────────────────────────────────────────────────────────────────
+let products    = [];
+let activeTab   = 'Todos';
+let searchTerm  = '';
 
-// ── LOAD ──────────────────────────────────────────────────────────────────────
+// cart[code]       = { product, qty }   → productos ya agregados al pedido
+// pendingQty[code] = number             → cantidad en el input (no aún agregada)
+let cart        = {};
+let pendingQty  = {};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LOAD
+// ─────────────────────────────────────────────────────────────────────────────
 async function loadData() {
   renderSkeletons();
   try {
@@ -448,7 +394,9 @@ async function loadData() {
     renderGrid();
   } catch(e) {
     document.getElementById('grid').innerHTML =
-      `<div class="empty">⚠️ Error al cargar el catálogo.<br>Asegúrate de que <strong>basedeprecios.json</strong> esté en la misma carpeta.<br><small>${e.message}</small></div>`;
+      `<div class="empty">⚠️ Error al cargar el catálogo.<br>
+      Asegúrate de que <strong>basedeprecios.json</strong> esté en la misma carpeta.<br>
+      <small>${e.message}</small></div>`;
   }
 }
 
@@ -457,53 +405,82 @@ function renderSkeletons() {
     <div class="skeleton">
       <div class="sk-img"></div>
       <div class="sk-body">
-        <div class="sk-line short"></div>
-        <div class="sk-line"></div><div class="sk-line"></div><div class="sk-line short"></div>
+        <div class="sk-line s"></div><div class="sk-line"></div>
+        <div class="sk-line"></div><div class="sk-line s"></div>
       </div>
     </div>`).join('');
 }
 
-// ── TABS ──────────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// TABS
+// ─────────────────────────────────────────────────────────────────────────────
 function buildTabs() {
-  const cats = ['Todos', ...new Set(products.map(p => p['Categoría']))].sort((a,b) => a==='Todos' ? -1 : a.localeCompare(b,'es'));
+  const cats = ['Todos', ...new Set(products.map(p => p['Categoría']))]
+    .sort((a,b) => a === 'Todos' ? -1 : a.localeCompare(b, 'es'));
   document.getElementById('tabs').innerHTML = cats.map(c => `
-    <button class="tab${c===activeTab?' active':''}" onclick="selectTab('${c.replace(/'/g,"\\'")}')">
-      ${c==='Todos' ? '⊞ Todos' : c}
+    <button class="tab${c === activeTab ? ' active' : ''}"
+            onclick="selectTab('${c.replace(/'/g, "\\'")}')">
+      ${c === 'Todos' ? '⊞ Todos' : c}
     </button>`).join('');
 }
 
 function selectTab(cat) {
+  // Antes de cambiar de vista, guardar los valores actuales de todos los inputs visibles
+  saveVisibleInputs();
   activeTab  = cat;
   searchTerm = '';
   document.getElementById('searchInput').value = '';
   document.querySelectorAll('.tab').forEach(t => {
-    const label = t.textContent.trim().replace('⊞ ','');
-    t.classList.toggle('active', label === cat);
+    t.classList.toggle('active', t.textContent.trim().replace('⊞ ', '') === cat);
   });
   renderGrid();
 }
 
-// ── SEARCH ────────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// SEARCH
+// ─────────────────────────────────────────────────────────────────────────────
 document.getElementById('searchInput').addEventListener('input', function() {
+  saveVisibleInputs();
   searchTerm = this.value.toLowerCase().trim();
+  // Quitar active de tabs cuando hay búsqueda activa
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   if (!searchTerm) {
+    // restaurar tab activo
     document.querySelectorAll('.tab').forEach(t => {
-      if (t.textContent.trim().replace('⊞ ','') === activeTab) t.classList.add('active');
+      if (t.textContent.trim().replace('⊞ ', '') === activeTab) t.classList.add('active');
     });
   }
   renderGrid();
 });
 
-// ── GRID ──────────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// Guardar valores de inputs visibles en pendingQty ANTES de redibujar
+// ─────────────────────────────────────────────────────────────────────────────
+function saveVisibleInputs() {
+  document.querySelectorAll('.qty-input').forEach(inp => {
+    const code = inp.dataset.code;
+    if (!code) return;
+    const v = parseInt(inp.value);
+    if (!isNaN(v) && v >= 1) pendingQty[code] = v;
+  });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// FILTER
+// ─────────────────────────────────────────────────────────────────────────────
 function filteredProducts() {
   if (searchTerm) return products.filter(p =>
     p['Nombre'].toLowerCase().includes(searchTerm) ||
     String(p['Código']).includes(searchTerm));
-  return activeTab === 'Todos' ? products : products.filter(p => p['Categoría'] === activeTab);
+  return activeTab === 'Todos'
+    ? products
+    : products.filter(p => p['Categoría'] === activeTab);
 }
 
-function getPriceInfo(p) {
+// ─────────────────────────────────────────────────────────────────────────────
+// PRICE HELPERS
+// ─────────────────────────────────────────────────────────────────────────────
+function getPriceRanges(p) {
   return [
     { range: p['Rango de Cantidad 1'], price: p['Precio 1'] },
     { range: p['Rango de Cantidad 2'], price: p['Precio 2'] },
@@ -512,55 +489,60 @@ function getPriceInfo(p) {
 }
 
 function parsePrice(str) {
-  if (!str) return 0;
-  return parseFloat(str.replace(/[^0-9.]/g,'')) || 0;
+  return parseFloat((str || '').replace(/[^0-9.]/g, '')) || 0;
 }
 
 function getBestPrice(p, qty) {
-  const ranges = getPriceInfo(p);
+  const ranges = getPriceRanges(p);
+  if (!ranges.length) return 0;
   let best = ranges[0];
   for (const r of ranges) {
-    const lo = parseInt(r.range.replace(/\s/g,'').match(/\d+/)?.[0]) || 0;
+    const lo = parseInt((r.range || '').replace(/\s/g,'').match(/\d+/)?.[0]) || 0;
     if (qty >= lo) best = r;
   }
-  return best ? parsePrice(best.price) : 0;
+  return parsePrice(best.price);
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// RENDER GRID
+// Nunca borra el carrito. Lee cart{} y pendingQty{} para reconstruir el HTML.
+// ─────────────────────────────────────────────────────────────────────────────
 function renderGrid() {
   const list  = filteredProducts();
   const label = searchTerm
     ? `Resultados para "${document.getElementById('searchInput').value}"`
     : activeTab === 'Todos' ? 'Todos los Productos' : activeTab;
 
-  // update title safely
-  const titleEl = document.getElementById('sectionTitle');
-  titleEl.innerHTML = `${label} <span class="product-count" id="prodCount">(${list.length})</span>`;
+  document.getElementById('sectionTitle').innerHTML =
+    `${label} <span class="product-count" id="prodCount">(${list.length})</span>`;
 
   if (!list.length) {
     document.getElementById('grid').innerHTML = `<div class="empty">
-      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      No se encontraron productos.</div>`;
+      <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>No se encontraron productos.</div>`;
     return;
   }
 
   document.getElementById('grid').innerHTML = list.map(p => {
-    const code   = p['Código'];
+    const code   = String(p['Código']);
     const inCart = !!cart[code];
-    const qty    = cart[code]?.qty || 1;
-    const ranges = getPriceInfo(p);
+    // Mostrar: si está en carrito → qty del carrito; si tiene pending → ese valor; si no → 1
+    const displayQty = inCart ? cart[code].qty : (pendingQty[code] || 1);
+    const ranges = getPriceRanges(p);
 
     const priceRows = ranges.map((r, i) => `
-      <div class="price-row${i===ranges.length-1 && ranges.length>1 ? ' best' : ''}">
+      <div class="price-row${i === ranges.length-1 && ranges.length > 1 ? ' best' : ''}">
         <span class="rng">${r.range}</span>
         <span class="prc">${r.price}</span>
       </div>`).join('');
 
     return `
-    <div class="card${inCart?' in-cart':''}" id="card-${code}">
+    <div class="card${inCart ? ' in-cart' : ''}" id="card-${code}">
       <div class="card-img-wrap">
         <div class="img-placeholder">🔧</div>
-        <img class="card-img" src="${p['Imagen']||''}" alt="${p['Nombre']}"
-             onerror="this.classList.add('error')" loading="lazy">
+        <img class="card-img" src="${p['Imagen'] || ''}" alt="${p['Nombre']}"
+             onerror="this.classList.add('err')" loading="lazy">
         <div class="cat-badge">${p['Categoría']}</div>
       </div>
       <div class="card-body">
@@ -568,13 +550,16 @@ function renderGrid() {
         <div class="card-name">${p['Nombre']}</div>
         <div class="price-table">${priceRows}</div>
         <div class="qty-control">
-          <button class="qty-btn" onclick="changeQty(${code},-1)">−</button>
-          <input class="qty-input" type="number" min="1" id="qty-${code}" value="${qty}"
-                 oninput="syncQty(${code},this.value)"
-                 onblur="fixQty(${code},this)">
-          <button class="qty-btn" onclick="changeQty(${code},1)">+</button>
+          <button class="qty-btn" onclick="cardDec('${code}')">−</button>
+          <input class="qty-input" type="number" min="1"
+                 data-code="${code}"
+                 id="qty-${code}"
+                 value="${displayQty}"
+                 onblur="cardBlur('${code}',this)">
+          <button class="qty-btn" onclick="cardInc('${code}')">+</button>
         </div>
-        <button class="add-btn${inCart?' added':''}" id="btn-${code}" onclick="addToCart(${code})">
+        <button class="add-btn${inCart ? ' added' : ''}" id="btn-${code}"
+                onclick="addToCart('${code}')">
           ${inCart ? '✔ Actualizar cantidad' : '＋ Agregar al pedido'}
         </button>
       </div>
@@ -582,69 +567,96 @@ function renderGrid() {
   }).join('');
 }
 
-// ── QTY HELPERS ───────────────────────────────────────────────────────────────
-function changeQty(code, delta) {
+// ─────────────────────────────────────────────────────────────────────────────
+// INPUT HELPERS (tarjeta)
+// ─────────────────────────────────────────────────────────────────────────────
+function getCardQty(code) {
   const inp = document.getElementById(`qty-${code}`);
-  if (!inp) return;
-  let v = Math.max(1, (parseInt(inp.value) || 1) + delta);
-  inp.value = v;
-  if (cart[code]) { cart[code].qty = v; renderDrawer(); }
+  return inp ? Math.max(1, parseInt(inp.value) || 1) : 1;
 }
 
-// called on every keystroke — just updates cart if already in it; does NOT force add
-function syncQty(code, val) {
-  const v = parseInt(val);
-  if (!isNaN(v) && v >= 1 && cart[code]) {
+function setCardQty(code, v) {
+  const inp = document.getElementById(`qty-${code}`);
+  if (inp) inp.value = v;
+  // siempre actualizar pendingQty para que persista al cambiar de tab
+  pendingQty[code] = v;
+  // si ya está en carrito, actualizar directamente
+  if (cart[code]) {
     cart[code].qty = v;
-    renderDrawer();
+    updateCartTotal();
   }
 }
 
-// on blur: fix empty/invalid values
-function fixQty(code, input) {
+function cardInc(code) {
+  setCardQty(code, getCardQty(code) + 1);
+}
+function cardDec(code) {
+  setCardQty(code, Math.max(1, getCardQty(code) - 1));
+}
+function cardBlur(code, input) {
   const v = Math.max(1, parseInt(input.value) || 1);
   input.value = v;
-  if (cart[code]) { cart[code].qty = v; renderDrawer(); }
+  pendingQty[code] = v;
+  if (cart[code]) {
+    cart[code].qty = v;
+    updateCartTotal();
+  }
 }
 
-// ── CART ──────────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// CART ACTIONS
+// ─────────────────────────────────────────────────────────────────────────────
 function addToCart(code) {
-  const p = products.find(x => x['Código'] == code);
+  const p = products.find(x => String(x['Código']) === code);
   if (!p) return;
-  // Always read the current input value at the moment of clicking Add
-  const inputEl = document.getElementById(`qty-${code}`);
-  const qty = Math.max(1, parseInt(inputEl?.value) || 1);
+
+  // Leer cantidad actual del input (puede ser manual o con botones)
+  const qty = getCardQty(code);
+  pendingQty[code] = qty; // guardar
 
   const isNew = !cart[code];
   cart[code] = { product: p, qty };
-  showToast(isNew ? `✅ Agregado: ${p['Nombre']}` : `✏️ Actualizado: ${p['Nombre']}`);
-  updateCardState(code, true);
-  updateBadge();
-  renderDrawer();
-}
 
-function updateCardState(code, inCart) {
+  showToast(isNew
+    ? `✅ ${p['Nombre']} – ${qty} pza${qty>1?'s':''}`
+    : `✏️ Actualizado: ${qty} pza${qty>1?'s':''}`);
+
+  // Actualizar solo la tarjeta afectada, sin redibujar el grid completo
   const card = document.getElementById(`card-${code}`);
   const btn  = document.getElementById(`btn-${code}`);
-  if (card) card.classList.toggle('in-cart', inCart);
-  if (btn)  { btn.classList.toggle('added', inCart); btn.textContent = inCart ? '✔ Actualizar cantidad' : '＋ Agregar al pedido'; }
+  if (card) card.classList.add('in-cart');
+  if (btn)  { btn.classList.add('added'); btn.textContent = '✔ Actualizar cantidad'; }
+
+  updateBadge();
+  updateCartTotal();
+  // Si el drawer está abierto, refrescar
+  if (document.getElementById('drawer').classList.contains('open')) renderDrawer();
 }
 
 function removeFromCart(code) {
   delete cart[code];
-  updateCardState(code, false);
-  // reset card input to 1
-  const inp = document.getElementById(`qty-${code}`);
-  if (inp) inp.value = 1;
+  pendingQty[code] = 1;
+
+  const card = document.getElementById(`card-${code}`);
+  const btn  = document.getElementById(`btn-${code}`);
+  const inp  = document.getElementById(`qty-${code}`);
+  if (card) card.classList.remove('in-cart');
+  if (btn)  { btn.classList.remove('added'); btn.textContent = '＋ Agregar al pedido'; }
+  if (inp)  inp.value = 1;
+
   updateBadge();
   renderDrawer();
 }
 
 function clearCart() {
   Object.keys(cart).forEach(code => {
-    updateCardState(code, false);
-    const inp = document.getElementById(`qty-${code}`);
-    if (inp) inp.value = 1;
+    pendingQty[code] = 1;
+    const card = document.getElementById(`card-${code}`);
+    const btn  = document.getElementById(`btn-${code}`);
+    const inp  = document.getElementById(`qty-${code}`);
+    if (card) card.classList.remove('in-cart');
+    if (btn)  { btn.classList.remove('added'); btn.textContent = '＋ Agregar al pedido'; }
+    if (inp)  inp.value = 1;
   });
   cart = {};
   updateBadge();
@@ -659,6 +671,18 @@ function updateBadge() {
   b.style.display = n ? 'flex' : 'none';
 }
 
+// Actualiza solo el total del drawer sin redibujar todo
+function updateCartTotal() {
+  const el = document.getElementById('cartTotal');
+  if (!el) return;
+  const total = Object.values(cart).reduce((s, { product: p, qty }) =>
+    s + getBestPrice(p, qty) * qty, 0);
+  el.textContent = `$${total.toFixed(2)}`;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DRAWER
+// ─────────────────────────────────────────────────────────────────────────────
 function renderDrawer() {
   const items = Object.values(cart);
   const body  = document.getElementById('drawerBody');
@@ -674,6 +698,7 @@ function renderDrawer() {
   let total = 0;
 
   body.innerHTML = items.map(({ product: p, qty }) => {
+    const code      = String(p['Código']);
     const unitPrice = getBestPrice(p, qty);
     const subtotal  = unitPrice * qty;
     total += subtotal;
@@ -682,16 +707,16 @@ function renderDrawer() {
       <img class="cart-item-img" src="${p['Imagen']}" alt="${p['Nombre']}" onerror="this.style.display='none'">
       <div class="cart-item-info">
         <div class="cart-item-name">${p['Nombre']}</div>
-        <div class="cart-item-code">Cód: ${p['Código']}</div>
+        <div class="cart-item-code">Cód: ${code}</div>
         <div class="cart-item-price">$${unitPrice.toFixed(2)} c/u · <strong>$${subtotal.toFixed(2)}</strong></div>
         <div class="cart-item-controls">
-          <button class="ci-qty-btn" onclick="ciChange(${p['Código']},-1)">−</button>
-          <input class="ci-qty-input" type="number" min="1"
+          <button class="ci-btn" onclick="ciDec('${code}')">−</button>
+          <input class="ci-inp" type="number" min="1" id="ci-${code}"
                  value="${qty}"
-                 onchange="ciSet(${p['Código']},this.value)"
-                 onblur="if(!this.value||this.value<1)this.value=1">
-          <button class="ci-qty-btn" onclick="ciChange(${p['Código']},1)">+</button>
-          <button class="ci-del" onclick="removeFromCart(${p['Código']})" title="Eliminar">🗑</button>
+                 onchange="ciSet('${code}', this.value)"
+                 onblur="if(!this.value||+this.value<1)this.value=1">
+          <button class="ci-btn" onclick="ciInc('${code}')">+</button>
+          <button class="ci-del" onclick="removeFromCart('${code}')" title="Eliminar">🗑</button>
         </div>
       </div>
     </div>`;
@@ -700,24 +725,30 @@ function renderDrawer() {
   document.getElementById('cartTotal').textContent = `$${total.toFixed(2)}`;
 }
 
-function ciChange(code, delta) {
+// Controles de cantidad DENTRO del drawer
+function ciInc(code) {
   if (!cart[code]) return;
-  cart[code].qty = Math.max(1, cart[code].qty + delta);
-  const inp = document.getElementById(`qty-${code}`);
-  if (inp) inp.value = cart[code].qty;
-  renderDrawer();
+  ciSet(code, cart[code].qty + 1);
 }
-
+function ciDec(code) {
+  if (!cart[code]) return;
+  ciSet(code, Math.max(1, cart[code].qty - 1));
+}
 function ciSet(code, val) {
   const v = Math.max(1, parseInt(val) || 1);
   if (!cart[code]) return;
   cart[code].qty = v;
-  const inp = document.getElementById(`qty-${code}`);
-  if (inp) inp.value = v;
+  pendingQty[code] = v;
+  // Sincronizar con el input de la tarjeta si está visible
+  const cardInp = document.getElementById(`qty-${code}`);
+  if (cardInp) cardInp.value = v;
+  // Re-render del drawer para actualizar subtotales
   renderDrawer();
 }
 
-// ── WHATSAPP ──────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// WHATSAPP
+// ─────────────────────────────────────────────────────────────────────────────
 function sendWhatsApp() {
   const items = Object.values(cart);
   if (!items.length) { showToast('⚠️ Agrega productos primero'); return; }
@@ -728,7 +759,7 @@ function sendWhatsApp() {
   items.forEach(({ product: p, qty }) => {
     const unit     = getBestPrice(p, qty);
     const subtotal = unit * qty;
-    grandTotal += subtotal;
+    grandTotal    += subtotal;
     lines.push(`• *${p['Nombre']}* (Cód: ${p['Código']})\n  Cant: ${qty} × $${unit.toFixed(2)} = $${subtotal.toFixed(2)}`);
   });
 
@@ -738,10 +769,9 @@ function sendWhatsApp() {
   window.open(`https://wa.me/${WA_PHONE}?text=${encodeURIComponent(lines.join('\n'))}`, '_blank');
 }
 
-// ── DRAWER ────────────────────────────────────────────────────────────────────
-function toggleDrawer() {
-  document.getElementById('drawer').classList.contains('open') ? closeDrawer() : openDrawer();
-}
+// ─────────────────────────────────────────────────────────────────────────────
+// DRAWER OPEN / CLOSE
+// ─────────────────────────────────────────────────────────────────────────────
 function openDrawer() {
   renderDrawer();
   document.getElementById('drawer').classList.add('open');
@@ -752,16 +782,21 @@ function closeDrawer() {
   document.getElementById('overlay').classList.remove('open');
 }
 
-// ── TOAST ─────────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// TOAST
+// ─────────────────────────────────────────────────────────────────────────────
 let toastTimer;
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────────────────────────────────────
 loadData();
 </script>
 </body>
