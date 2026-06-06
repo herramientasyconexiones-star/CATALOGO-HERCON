@@ -1,321 +1,750 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es-MX">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Catálogo HERCON - Herramientas y Conexiones</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f0f2f5;
-            padding: 20px;
-        }
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-        .header {
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
-            color: white;
-            padding: 30px;
-            text-align: center;
-        }
-        .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-        }
-        .search-section {
-            padding: 30px;
-            background: #f8f9fa;
-            border-bottom: 1px solid #e0e0e0;
-        }
-        .search-box {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-        }
-        .search-input {
-            flex: 1;
-            padding: 15px 20px;
-            font-size: 16px;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            transition: all 0.3s;
-        }
-        .search-input:focus {
-            outline: none;
-            border-color: #2a5298;
-            box-shadow: 0 0 0 3px rgba(42,82,152,0.1);
-        }
-        .search-btn {
-            padding: 15px 30px;
-            background: #2a5298;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            transition: all 0.3s;
-        }
-        .search-btn:hover {
-            background: #1e3c72;
-            transform: translateY(-2px);
-        }
-        .stats {
-            background: #e3f2fd;
-            padding: 15px;
-            border-radius: 10px;
-            text-align: center;
-            margin-top: 15px;
-        }
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 25px;
-            padding: 30px;
-        }
-        .product-card {
-            background: white;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: all 0.3s;
-            cursor: pointer;
-            border: 1px solid #e0e0e0;
-        }
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-        }
-        .product-image {
-            width: 100%;
-            height: 200px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 48px;
-        }
-        .product-info {
-            padding: 20px;
-        }
-        .product-code {
-            color: #666;
-            font-size: 12px;
-            text-transform: uppercase;
-            margin-bottom: 8px;
-        }
-        .product-name {
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 12px;
-            color: #333;
-            line-height: 1.4;
-            min-height: 44px;
-        }
-        .product-price {
-            font-size: 24px;
-            font-weight: bold;
-            color: #2a5298;
-            margin-bottom: 8px;
-        }
-        .product-stock {
-            font-size: 13px;
-            color: #28a745;
-            margin-bottom: 12px;
-        }
-        .add-to-cart {
-            width: 100%;
-            padding: 12px;
-            background: #28a745;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s;
-        }
-        .add-to-cart:hover {
-            background: #218838;
-        }
-        .loading {
-            text-align: center;
-            padding: 50px;
-            font-size: 18px;
-            color: #666;
-        }
-        .error {
-            text-align: center;
-            padding: 50px;
-            color: #dc3545;
-            background: #f8d7da;
-            margin: 30px;
-            border-radius: 10px;
-        }
-        @media (max-width: 768px) {
-            .products-grid {
-                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-                gap: 15px;
-                padding: 15px;
-            }
-            .header h1 {
-                font-size: 1.8em;
-            }
-            .search-section {
-                padding: 20px;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catálogo de Pedidos – Herramientas y Conexiones</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --rojo:    #c0272d;
+    --rojo-d:  #961e23;
+    --rojo-ll: #e8383f;
+    --gris-os: #1a1a1a;
+    --gris-m:  #2e2e2e;
+    --gris-c:  #444;
+    --gris-bg: #f4f4f4;
+    --borde:   #d8d8d8;
+    --blanco:  #ffffff;
+    --verde:   #2e7d32;
+    --amarillo:#f59e0b;
+    --shadow:  0 2px 12px rgba(0,0,0,.13);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Source Sans 3', sans-serif;
+    background: var(--gris-bg);
+    color: var(--gris-os);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--gris-os);
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 3px 16px rgba(0,0,0,.45);
+  }
+  .header-inner {
+    max-width: 1280px; margin: 0 auto;
+    padding: 10px 20px;
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  }
+  .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+  .brand-logo {
+    width: 52px; height: 52px; border-radius: 8px;
+    object-fit: cover;
+  }
+  .brand-text { line-height: 1; }
+  .brand-name {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.25rem; font-weight: 700;
+    color: var(--blanco); letter-spacing: .5px;
+  }
+  .brand-sub {
+    font-size: .72rem; color: var(--rojo-ll);
+    font-weight: 600; letter-spacing: 2px; text-transform: uppercase;
+  }
+  .search-wrap {
+    flex: 1; min-width: 200px;
+    position: relative;
+  }
+  .search-wrap input {
+    width: 100%; padding: 9px 16px 9px 40px;
+    border: none; border-radius: 6px;
+    background: #333; color: var(--blanco);
+    font-size: .95rem; font-family: inherit;
+    outline: none; transition: background .2s;
+  }
+  .search-wrap input::placeholder { color: #888; }
+  .search-wrap input:focus { background: #3d3d3d; }
+  .search-icon {
+    position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+    color: #888; pointer-events: none;
+  }
+  .cart-btn {
+    position: relative; cursor: pointer;
+    background: var(--rojo); border: none; border-radius: 8px;
+    padding: 9px 16px; color: var(--blanco);
+    font-family: 'Oswald', sans-serif; font-size: 1rem; font-weight: 600;
+    display: flex; align-items: center; gap: 8px;
+    transition: background .2s, transform .1s; white-space: nowrap;
+  }
+  .cart-btn:hover { background: var(--rojo-ll); transform: translateY(-1px); }
+  .cart-badge {
+    position: absolute; top: -6px; right: -6px;
+    background: var(--amarillo); color: var(--gris-os);
+    font-size: .7rem; font-weight: 700; font-family: inherit;
+    width: 20px; height: 20px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    display: none;
+  }
+
+  /* ── CATEGORY TABS ── */
+  .tabs-outer {
+    background: var(--gris-m);
+    border-bottom: 3px solid var(--rojo);
+    overflow-x: auto;
+  }
+  .tabs-inner {
+    max-width: 1280px; margin: 0 auto;
+    display: flex; gap: 2px; padding: 0 12px;
+  }
+  .tab {
+    font-family: 'Oswald', sans-serif; font-size: .85rem; font-weight: 500;
+    padding: 11px 16px; cursor: pointer; white-space: nowrap;
+    color: #aaa; border: none; background: transparent;
+    border-bottom: 3px solid transparent; margin-bottom: -3px;
+    transition: color .2s, border-color .2s; letter-spacing: .5px;
+  }
+  .tab:hover { color: var(--blanco); }
+  .tab.active { color: var(--blanco); border-bottom-color: var(--rojo); }
+
+  /* ── MAIN GRID ── */
+  .main { max-width: 1280px; margin: 0 auto; padding: 24px 20px; }
+
+  .section-title {
+    font-family: 'Oswald', sans-serif; font-size: 1.4rem; font-weight: 600;
+    color: var(--gris-os); margin-bottom: 18px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-title::after {
+    content: ''; flex: 1; height: 2px;
+    background: linear-gradient(to right, var(--rojo), transparent);
+  }
+  .product-count { font-size: .85rem; color: #666; font-family: 'Source Sans 3', sans-serif; font-weight: 400; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 18px;
+  }
+
+  /* ── PRODUCT CARD ── */
+  .card {
+    background: var(--blanco);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    display: flex; flex-direction: column;
+    transition: transform .2s, box-shadow .2s;
+    border: 2px solid transparent;
+  }
+  .card:hover { transform: translateY(-3px); box-shadow: 0 6px 24px rgba(0,0,0,.16); }
+  .card.in-cart { border-color: var(--rojo); }
+
+  .card-img-wrap {
+    position: relative; aspect-ratio: 1 / 1;
+    background: #f8f8f8; overflow: hidden;
+  }
+  .card-img {
+    width: 100%; height: 100%; object-fit: contain;
+    padding: 8px; transition: transform .3s;
+  }
+  .card:hover .card-img { transform: scale(1.05); }
+  .card-img.error { opacity: 0; }
+  .img-placeholder {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.5rem; color: #ccc;
+  }
+  .cat-badge {
+    position: absolute; top: 8px; left: 8px;
+    background: var(--rojo); color: var(--blanco);
+    font-size: .65rem; font-weight: 700; font-family: 'Oswald', sans-serif;
+    padding: 2px 7px; border-radius: 3px; letter-spacing: .5px;
+  }
+
+  .card-body { padding: 12px; flex: 1; display: flex; flex-direction: column; }
+  .card-code { font-size: .7rem; color: #999; margin-bottom: 4px; }
+  .card-name {
+    font-size: .9rem; font-weight: 600; line-height: 1.3;
+    color: var(--gris-os); margin-bottom: 8px; flex: 1;
+  }
+
+  .price-table { font-size: .78rem; color: #555; margin-bottom: 10px; }
+  .price-row { display: flex; justify-content: space-between; padding: 2px 0; }
+  .price-row .qty { color: #888; }
+  .price-row .price { font-weight: 700; color: var(--rojo-d); }
+  .price-row.highlight .price { color: var(--verde); font-size: .83rem; }
+
+  /* ── QTY CONTROL ── */
+  .qty-control {
+    display: flex; align-items: center; gap: 0;
+    border: 2px solid var(--borde); border-radius: 8px; overflow: hidden;
+  }
+  .qty-btn {
+    width: 34px; height: 34px; border: none; cursor: pointer;
+    background: var(--gris-bg); color: var(--gris-os);
+    font-size: 1.1rem; font-weight: 700; display: flex;
+    align-items: center; justify-content: center;
+    transition: background .15s;
+  }
+  .qty-btn:hover { background: var(--rojo); color: var(--blanco); }
+  .qty-input {
+    flex: 1; border: none; outline: none; text-align: center;
+    font-size: .95rem; font-weight: 600; font-family: inherit;
+    color: var(--gris-os); background: var(--blanco);
+    min-width: 0; padding: 0 4px; height: 34px;
+  }
+  /* hide spinners */
+  .qty-input::-webkit-outer-spin-button,
+  .qty-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+  .qty-input[type=number] { -moz-appearance: textfield; }
+
+  .add-btn {
+    margin-top: 8px; width: 100%;
+    padding: 8px; border: none; border-radius: 6px;
+    background: var(--rojo); color: var(--blanco);
+    font-family: 'Oswald', sans-serif; font-size: .95rem; font-weight: 600;
+    cursor: pointer; letter-spacing: .5px;
+    transition: background .2s, transform .1s;
+  }
+  .add-btn:hover { background: var(--rojo-ll); }
+  .add-btn.added { background: var(--verde); }
+  .add-btn:active { transform: scale(.97); }
+
+  /* ── EMPTY / LOADING ── */
+  .empty {
+    grid-column: 1 / -1; text-align: center;
+    padding: 60px 20px; color: #aaa;
+    font-size: 1rem;
+  }
+  .empty svg { display: block; margin: 0 auto 12px; opacity: .3; }
+
+  /* ── CART DRAWER ── */
+  .overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,.55);
+    z-index: 200; display: none; cursor: pointer;
+  }
+  .drawer {
+    position: fixed; right: 0; top: 0; bottom: 0; width: 420px; max-width: 100%;
+    background: var(--blanco); z-index: 201;
+    display: flex; flex-direction: column;
+    transform: translateX(100%); transition: transform .3s ease;
+    box-shadow: -4px 0 32px rgba(0,0,0,.2);
+  }
+  .drawer.open { transform: translateX(0); }
+  .overlay.open { display: block; }
+
+  .drawer-head {
+    background: var(--gris-os); color: var(--blanco);
+    padding: 16px 20px; display: flex; align-items: center; justify-content: space-between;
+  }
+  .drawer-title {
+    font-family: 'Oswald', sans-serif; font-size: 1.2rem; font-weight: 600;
+  }
+  .close-btn {
+    background: none; border: none; color: var(--blanco);
+    font-size: 1.5rem; cursor: pointer; line-height: 1;
+    padding: 4px; transition: color .2s;
+  }
+  .close-btn:hover { color: var(--rojo-ll); }
+
+  .drawer-body { flex: 1; overflow-y: auto; padding: 16px; }
+  .cart-empty { text-align: center; padding: 60px 20px; color: #aaa; }
+
+  .cart-item {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 12px 0; border-bottom: 1px solid var(--borde);
+  }
+  .cart-item-img {
+    width: 54px; height: 54px; object-fit: contain;
+    border-radius: 6px; background: #f5f5f5; border: 1px solid var(--borde);
+    flex-shrink: 0;
+  }
+  .cart-item-info { flex: 1; }
+  .cart-item-name { font-size: .85rem; font-weight: 600; line-height: 1.3; }
+  .cart-item-code { font-size: .72rem; color: #999; }
+  .cart-item-price { font-size: .8rem; color: var(--rojo-d); font-weight: 700; margin-top: 2px; }
+  .cart-item-controls {
+    display: flex; align-items: center; gap: 6px; margin-top: 6px;
+  }
+  .ci-qty-btn {
+    width: 24px; height: 24px; border: 1px solid var(--borde);
+    border-radius: 4px; background: var(--gris-bg); cursor: pointer;
+    font-size: .9rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    transition: background .15s;
+  }
+  .ci-qty-btn:hover { background: var(--rojo); color: var(--blanco); border-color: var(--rojo); }
+  .ci-qty { font-size: .9rem; font-weight: 600; min-width: 28px; text-align: center; }
+  .ci-del {
+    background: none; border: none; color: #bbb; cursor: pointer;
+    font-size: 1.1rem; padding: 0 4px; transition: color .2s; margin-left: auto;
+  }
+  .ci-del:hover { color: var(--rojo); }
+
+  .drawer-foot {
+    padding: 16px 20px;
+    border-top: 2px solid var(--borde);
+    background: var(--gris-bg);
+  }
+  .cart-total {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 12px;
+  }
+  .cart-total-label { font-family: 'Oswald', sans-serif; font-size: 1rem; font-weight: 600; }
+  .cart-total-val { font-family: 'Oswald', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--rojo); }
+
+  .wa-btn {
+    width: 100%; padding: 13px;
+    background: #25d366; color: var(--blanco); border: none; border-radius: 8px;
+    font-family: 'Oswald', sans-serif; font-size: 1.1rem; font-weight: 700;
+    cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
+    letter-spacing: .5px; transition: background .2s, transform .1s;
+  }
+  .wa-btn:hover { background: #1ebe5d; transform: translateY(-1px); }
+  .wa-btn:active { transform: scale(.98); }
+  .wa-btn svg { flex-shrink: 0; }
+
+  .clear-btn {
+    width: 100%; margin-top: 8px; padding: 9px;
+    background: transparent; color: #999; border: 1px solid var(--borde);
+    border-radius: 8px; cursor: pointer; font-family: inherit; font-size: .85rem;
+    transition: background .15s, color .15s;
+  }
+  .clear-btn:hover { background: #ffeaea; color: var(--rojo); border-color: var(--rojo); }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
+    background: var(--gris-os); color: var(--blanco);
+    padding: 10px 22px; border-radius: 24px; font-size: .88rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,.3); z-index: 300;
+    transition: transform .3s ease; white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ── UPDATE BANNER ── */
+  .update-bar {
+    background: var(--rojo); color: var(--blanco);
+    text-align: center; padding: 8px 20px;
+    font-size: .82rem; font-weight: 600; letter-spacing: .5px;
+  }
+  .update-bar a { color: var(--amarillo); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 640px) {
+    .grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+    .header-inner { padding: 8px 12px; gap: 10px; }
+    .search-wrap { order: 3; flex-basis: 100%; }
+    .drawer { width: 100%; }
+    .brand-name { font-size: 1rem; }
+  }
+
+  /* ── SKELETON LOADER ── */
+  @keyframes shimmer { 0%{background-position:-400px 0} 100%{background-position:400px 0} }
+  .skeleton {
+    border-radius: 10px; overflow: hidden; background: var(--blanco);
+    box-shadow: var(--shadow);
+  }
+  .sk-img { height: 180px; background: linear-gradient(90deg,#eee 25%,#f8f8f8 50%,#eee 75%); background-size: 800px 100%; animation: shimmer 1.3s infinite; }
+  .sk-body { padding: 12px; }
+  .sk-line { height: 10px; border-radius: 4px; margin-bottom: 8px; background: linear-gradient(90deg,#eee 25%,#f8f8f8 50%,#eee 75%); background-size: 800px 100%; animation: shimmer 1.3s infinite; }
+  .sk-line.short { width: 55%; }
+</style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🛠️ Catálogo HERCON</h1>
-            <p>Herramientas y Conexiones - Calidad y Precio</p>
-        </div>
 
-        <div class="search-section">
-            <div class="search-box">
-                <input type="text" id="searchInput" class="search-input" placeholder="🔍 Buscar por código, nombre o referencia...">
-                <button onclick="filterProducts()" class="search-btn">Buscar</button>
-            </div>
-            <div class="stats" id="stats">
-                Cargando productos...
-            </div>
-        </div>
+<!-- Update bar -->
+<div class="update-bar">
+  📋 Precios actualizados semanalmente · Para actualizar el catálogo: reemplaza el archivo <strong>basedeprecios.json</strong> y recarga la página
+</div>
 
-        <div id="productsGrid" class="products-grid">
-            <div class="loading">
-                ⏳ Cargando catálogo de productos...
-            </div>
-        </div>
+<!-- Header -->
+<header>
+  <div class="header-inner">
+    <a class="brand" href="https://www.herramientasyconexiones.com/" target="_blank">
+      <img class="brand-logo" src="https://www.herramientasyconexiones.com/img/logo.png"
+           onerror="this.style.display='none'" alt="Logo">
+      <div class="brand-text">
+        <div class="brand-name">Herramientas y Conexiones</div>
+        <div class="brand-sub">Catálogo de Pedidos</div>
+      </div>
+    </a>
+
+    <div class="search-wrap">
+      <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="searchInput" placeholder="Buscar producto por nombre o código…" autocomplete="off">
     </div>
 
-    <script>
-        let productsData = [];
+    <button class="cart-btn" onclick="toggleDrawer()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+      Mi Pedido
+      <span class="cart-badge" id="cartBadge">0</span>
+    </button>
+  </div>
+</header>
 
-        // Cargar productos desde el archivo JSON
-        async function loadProducts() {
-            try {
-                const response = await fetch('precios.json');
-                if (!response.ok) {
-                    throw new Error(`Error al cargar precios.json: ${response.status}`);
-                }
-                const data = await response.json();
-                productsData = data;
-                displayProducts(productsData);
-                updateStats(productsData.length);
-            } catch (error) {
-                console.error('Error:', error);
-                document.getElementById('productsGrid').innerHTML = `
-                    <div class="error">
-                        ❌ Error al cargar los productos: ${error.message}<br><br>
-                        <strong>Solución:</strong> Asegúrate de que el archivo <code>precios.json</code> exista en el repositorio.
-                    </div>
-                `;
-                document.getElementById('stats').innerHTML = '❌ Error al cargar datos';
-            }
-        }
+<!-- Category tabs -->
+<div class="tabs-outer">
+  <div class="tabs-inner" id="tabs"></div>
+</div>
 
-        function displayProducts(products) {
-            const grid = document.getElementById('productsGrid');
-            
-            if (!products || products.length === 0) {
-                grid.innerHTML = '<div class="loading">😕 No se encontraron productos. Intenta con otra búsqueda.</div>';
-                return;
-            }
+<!-- Main grid -->
+<div class="main">
+  <div class="section-title" id="sectionTitle">
+    Todos los Productos <span class="product-count" id="prodCount"></span>
+  </div>
+  <div class="grid" id="grid"></div>
+</div>
 
-            grid.innerHTML = products.map(product => `
-                <div class="product-card">
-                    <div class="product-image">
-                        ${getIconForProduct(product.NOMBRE || product.nombre || '')}
-                    </div>
-                    <div class="product-info">
-                        <div class="product-code">Código: ${product.CODIGO || product.codigo || 'N/A'}</div>
-                        <div class="product-name">${product.NOMBRE || product.nombre || 'Sin nombre'}</div>
-                        <div class="product-price">$${formatPrice(product.PRECIO || product.precio || 0)}</div>
-                        <div class="product-stock">✅ Disponible</div>
-                        <button class="add-to-cart" onclick="showProductInfo('${(product.CODIGO || product.codigo || '').replace(/'/g, "\\'")}')">
-                            📞 Solicitar Cotización
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-        }
+<!-- Overlay -->
+<div class="overlay" id="overlay" onclick="closeDrawer()"></div>
 
-        function getIconForProduct(name) {
-            const nameLower = (name || '').toLowerCase();
-            if (nameLower.includes('taladro') || nameLower.includes('perforador')) return '🔨';
-            if (nameLower.includes('sierra')) return '⚙️';
-            if (nameLower.includes('llave')) return '🔧';
-            if (nameLower.includes('martillo')) return '🔨';
-            if (nameLower.includes('pintura')) return '🎨';
-            return '🛠️';
-        }
+<!-- Cart Drawer -->
+<div class="drawer" id="drawer">
+  <div class="drawer-head">
+    <div class="drawer-title">🛒 Mi Pedido</div>
+    <button class="close-btn" onclick="closeDrawer()">×</button>
+  </div>
+  <div class="drawer-body" id="drawerBody">
+    <div class="cart-empty">Tu pedido está vacío.<br>Agrega productos del catálogo.</div>
+  </div>
+  <div class="drawer-foot" id="drawerFoot" style="display:none">
+    <div class="cart-total">
+      <span class="cart-total-label">Subtotal estimado:</span>
+      <span class="cart-total-val" id="cartTotal">$0.00</span>
+    </div>
+    <button class="wa-btn" onclick="sendWhatsApp()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+      Enviar Pedido por WhatsApp
+    </button>
+    <button class="clear-btn" onclick="clearCart()">Limpiar pedido</button>
+  </div>
+</div>
 
-        function formatPrice(price) {
-            if (typeof price === 'string') {
-                price = parseFloat(price.replace(/[$,]/g, ''));
-            }
-            return isNaN(price) ? '0' : price.toLocaleString('es-MX', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-        }
+<!-- Toast -->
+<div class="toast" id="toast"></div>
 
-        function filterProducts() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
-            
-            if (!searchTerm) {
-                displayProducts(productsData);
-                updateStats(productsData.length);
-                return;
-            }
+<script>
+// ─── CONFIG ──────────────────────────────────────────────────────────────────
+const DATA_URL   = 'basedeprecios.json';  // ← archivo que se actualiza semanalmente
+const WA_PHONE   = '527731511890';         // WhatsApp destino
 
-            const filtered = productsData.filter(product => {
-                const codigo = (product.CODIGO || product.codigo || '').toLowerCase();
-                const nombre = (product.NOMBRE || product.nombre || '').toLowerCase();
-                return codigo.includes(searchTerm) || nombre.includes(searchTerm);
-            });
-            
-            displayProducts(filtered);
-            updateStats(filtered.length, searchTerm);
-        }
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let products   = [];
+let activeTab  = 'Todos';
+let cart       = {};   // { código: {product, qty} }
+let searchTerm = '';
 
-        function updateStats(count, searchTerm = '') {
-            const statsDiv = document.getElementById('stats');
-            if (searchTerm) {
-                statsDiv.innerHTML = `📊 Mostrando ${count} producto(s) para "${searchTerm}" | Total en catálogo: ${productsData.length}`;
-            } else {
-                statsDiv.innerHTML = `📊 Total de productos disponibles: ${count}`;
-            }
-        }
+// ─── LOAD DATA ───────────────────────────────────────────────────────────────
+async function loadData() {
+  renderSkeletons();
+  try {
+    const r = await fetch(DATA_URL);
+    if (!r.ok) throw new Error('No se pudo cargar el catálogo');
+    products = await r.json();
+    buildTabs();
+    renderGrid();
+  } catch(e) {
+    document.getElementById('grid').innerHTML =
+      `<div class="empty">⚠️ Error al cargar el catálogo.<br>Asegúrate de que <strong>basedeprecios.json</strong> esté en la misma carpeta que este archivo HTML.<br><small>${e.message}</small></div>`;
+  }
+}
 
-        function showProductInfo(productCode) {
-            const product = productsData.find(p => (p.CODIGO || p.codigo) === productCode);
-            if (product) {
-                alert(`📞 Para cotizar o comprar:\n\nCódigo: ${product.CODIGO || product.codigo}\nProducto: ${product.NOMBRE || product.nombre}\nPrecio: $${formatPrice(product.PRECIO || product.precio)}\n\nContáctanos:\n📱 WhatsApp: [Tu número]\n📧 Email: [tu@email.com]`);
-            }
-        }
+function renderSkeletons() {
+  const g = document.getElementById('grid');
+  g.innerHTML = Array(12).fill(0).map(() => `
+    <div class="skeleton">
+      <div class="sk-img"></div>
+      <div class="sk-body">
+        <div class="sk-line short"></div>
+        <div class="sk-line"></div>
+        <div class="sk-line"></div>
+        <div class="sk-line short"></div>
+      </div>
+    </div>`).join('');
+}
 
-        // Agregar evento de búsqueda al presionar Enter
-        document.getElementById('searchInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                filterProducts();
-            }
-        });
+// ─── CATEGORIES ──────────────────────────────────────────────────────────────
+function buildTabs() {
+  const cats = ['Todos', ...new Set(products.map(p => p['Categoría']))].sort((a,b) => a === 'Todos' ? -1 : a.localeCompare(b, 'es'));
+  const container = document.getElementById('tabs');
+  container.innerHTML = cats.map(c => `
+    <button class="tab${c === activeTab ? ' active' : ''}" onclick="selectTab('${c.replace(/'/g,"\\'")}')">
+      ${c === 'Todos' ? '⊞ Todos' : c}
+    </button>`).join('');
+}
 
-        // Cargar productos al iniciar
-        loadProducts();
-    </script>
+function selectTab(cat) {
+  activeTab = cat;
+  searchTerm = '';
+  document.getElementById('searchInput').value = '';
+  document.querySelectorAll('.tab').forEach(t => {
+    t.classList.toggle('active', t.textContent.trim().replace('⊞ ','') === cat || (cat === 'Todos' && t.textContent.includes('Todos')));
+  });
+  renderGrid();
+}
+
+// ─── SEARCH ──────────────────────────────────────────────────────────────────
+document.getElementById('searchInput').addEventListener('input', function() {
+  searchTerm = this.value.toLowerCase().trim();
+  if (searchTerm) activeTab = 'Todos';
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  if (searchTerm) {
+    document.querySelector('.tab')?.classList.add('active');
+  } else {
+    selectTab(activeTab);
+    return;
+  }
+  renderGrid();
+});
+
+// ─── GRID ─────────────────────────────────────────────────────────────────────
+function filteredProducts() {
+  let list = activeTab === 'Todos' ? products : products.filter(p => p['Categoría'] === activeTab);
+  if (searchTerm) list = products.filter(p =>
+    p['Nombre'].toLowerCase().includes(searchTerm) ||
+    String(p['Código']).includes(searchTerm)
+  );
+  return list;
+}
+
+function getPriceInfo(p, qty) {
+  const ranges = [
+    { range: p['Rango de Cantidad 1'], price: p['Precio 1'] },
+    { range: p['Rango de Cantidad 2'], price: p['Precio 2'] },
+    { range: p['Rango de Cantidad 3'], price: p['Precio 3'] },
+  ].filter(r => r.range && r.price);
+  return ranges;
+}
+
+function parsePrice(str) {
+  if (!str) return 0;
+  return parseFloat(str.replace(/[^0-9.]/g,'')) || 0;
+}
+
+function getBestPrice(p, qty) {
+  const ranges = getPriceInfo(p);
+  let best = ranges[0];
+  for (const r of ranges) {
+    const parts = r.range.toLowerCase().replace(/\s/g,'').split(/[aáo]/);
+    const lo = parseInt(parts[0]) || 0;
+    if (qty >= lo) best = r;
+  }
+  return best ? parsePrice(best.price) : 0;
+}
+
+function renderGrid() {
+  const list = filteredProducts();
+  const title = searchTerm ? `Resultados para "${document.getElementById('searchInput').value}"` : activeTab === 'Todos' ? 'Todos los Productos' : activeTab;
+  document.getElementById('sectionTitle').childNodes[0].textContent = title + ' ';
+  document.getElementById('prodCount').textContent = `(${list.length})`;
+
+  if (!list.length) {
+    document.getElementById('grid').innerHTML = `<div class="empty"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>No se encontraron productos.</div>`;
+    return;
+  }
+
+  document.getElementById('grid').innerHTML = list.map(p => {
+    const code = p['Código'];
+    const inCart = !!cart[code];
+    const qty = cart[code]?.qty || 1;
+    const ranges = getPriceInfo(p);
+
+    const priceRows = ranges.map((r, i) => `
+      <div class="price-row${i === ranges.length-1 && ranges.length > 1 ? ' highlight' : ''}">
+        <span class="qty">${r.range}</span>
+        <span class="price">${r.price}</span>
+      </div>`).join('');
+
+    return `
+    <div class="card${inCart ? ' in-cart' : ''}" id="card-${code}">
+      <div class="card-img-wrap">
+        <div class="img-placeholder">🔧</div>
+        <img class="card-img" src="${p['Imagen'] || ''}" alt="${p['Nombre']}"
+             onload="this.style.opacity=1" onerror="this.classList.add('error')"
+             loading="lazy">
+        <div class="cat-badge">${p['Categoría']}</div>
+      </div>
+      <div class="card-body">
+        <div class="card-code">Cód: ${code}</div>
+        <div class="card-name">${p['Nombre']}</div>
+        <div class="price-table">${priceRows}</div>
+        <div class="qty-control">
+          <button class="qty-btn" onclick="changeQty(${code},-1)">−</button>
+          <input class="qty-input" type="number" min="1" id="qty-${code}"
+                 value="${qty}" onchange="setQty(${code}, this.value)">
+          <button class="qty-btn" onclick="changeQty(${code},1)">+</button>
+        </div>
+        <button class="add-btn${inCart?' added':''}" id="btn-${code}" onclick="addToCart(${code})">
+          ${inCart ? '✔ En el pedido' : '＋ Agregar al pedido'}
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ─── QTY HELPERS ─────────────────────────────────────────────────────────────
+function changeQty(code, delta) {
+  const input = document.getElementById(`qty-${code}`);
+  if (!input) return;
+  let v = parseInt(input.value) || 1;
+  v = Math.max(1, v + delta);
+  input.value = v;
+  if (cart[code]) { cart[code].qty = v; renderDrawer(); }
+}
+function setQty(code, val) {
+  const v = Math.max(1, parseInt(val) || 1);
+  document.getElementById(`qty-${code}`).value = v;
+  if (cart[code]) { cart[code].qty = v; renderDrawer(); }
+}
+
+// ─── CART ─────────────────────────────────────────────────────────────────────
+function addToCart(code) {
+  const p = products.find(x => x['Código'] == code);
+  if (!p) return;
+  const qty = parseInt(document.getElementById(`qty-${code}`)?.value) || 1;
+  if (cart[code]) {
+    cart[code].qty = qty;
+    showToast(`✏️ Cantidad actualizada: ${p['Nombre']}`);
+  } else {
+    cart[code] = { product: p, qty };
+    showToast(`✅ Agregado: ${p['Nombre']}`);
+  }
+  updateCardState(code, true);
+  updateBadge();
+  renderDrawer();
+}
+
+function updateCardState(code, inCart) {
+  const card = document.getElementById(`card-${code}`);
+  const btn  = document.getElementById(`btn-${code}`);
+  if (card) card.classList.toggle('in-cart', inCart);
+  if (btn)  { btn.classList.toggle('added', inCart); btn.textContent = inCart ? '✔ En el pedido' : '＋ Agregar al pedido'; }
+}
+
+function removeFromCart(code) {
+  delete cart[code];
+  updateCardState(code, false);
+  updateBadge();
+  renderDrawer();
+}
+
+function clearCart() {
+  Object.keys(cart).forEach(code => updateCardState(code, false));
+  cart = {};
+  updateBadge();
+  renderDrawer();
+  showToast('🗑️ Pedido limpiado');
+}
+
+function updateBadge() {
+  const total = Object.keys(cart).length;
+  const badge = document.getElementById('cartBadge');
+  badge.textContent = total;
+  badge.style.display = total ? 'flex' : 'none';
+}
+
+function renderDrawer() {
+  const items = Object.values(cart);
+  const body  = document.getElementById('drawerBody');
+  const foot  = document.getElementById('drawerFoot');
+
+  if (!items.length) {
+    body.innerHTML = '<div class="cart-empty">Tu pedido está vacío.<br>Agrega productos del catálogo.</div>';
+    foot.style.display = 'none';
+    return;
+  }
+
+  foot.style.display = 'block';
+  let total = 0;
+
+  body.innerHTML = items.map(({ product: p, qty }) => {
+    const priceUnit = getBestPrice(p, qty);
+    const subtotal  = priceUnit * qty;
+    total += subtotal;
+    return `
+    <div class="cart-item">
+      <img class="cart-item-img" src="${p['Imagen']}" alt="${p['Nombre']}" onerror="this.style.display='none'">
+      <div class="cart-item-info">
+        <div class="cart-item-name">${p['Nombre']}</div>
+        <div class="cart-item-code">Cód: ${p['Código']}</div>
+        <div class="cart-item-price">$${priceUnit.toFixed(2)} c/u · $${subtotal.toFixed(2)}</div>
+        <div class="cart-item-controls">
+          <button class="ci-qty-btn" onclick="ciChange(${p['Código']},-1)">−</button>
+          <span class="ci-qty">${qty}</span>
+          <button class="ci-qty-btn" onclick="ciChange(${p['Código']},1)">+</button>
+          <button class="ci-del" onclick="removeFromCart(${p['Código']})" title="Eliminar">🗑</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('cartTotal').textContent = `$${total.toFixed(2)}`;
+}
+
+function ciChange(code, delta) {
+  if (!cart[code]) return;
+  cart[code].qty = Math.max(1, cart[code].qty + delta);
+  // sync card input if visible
+  const inp = document.getElementById(`qty-${code}`);
+  if (inp) inp.value = cart[code].qty;
+  renderDrawer();
+}
+
+// ─── WHATSAPP ─────────────────────────────────────────────────────────────────
+function sendWhatsApp() {
+  const items = Object.values(cart);
+  if (!items.length) { showToast('⚠️ Agrega productos primero'); return; }
+
+  let lines = ['📋 *PEDIDO – Herramientas y Conexiones*\n'];
+  let grandTotal = 0;
+
+  items.forEach(({ product: p, qty }) => {
+    const priceUnit = getBestPrice(p, qty);
+    const subtotal  = priceUnit * qty;
+    grandTotal += subtotal;
+    lines.push(`• *${p['Nombre']}* (Cód: ${p['Código']})\n  Cant: ${qty} × $${priceUnit.toFixed(2)} = $${subtotal.toFixed(2)}`);
+  });
+
+  lines.push(`\n💰 *Total estimado: $${grandTotal.toFixed(2)}*`);
+  lines.push('\n_Precios sujetos a cambio y disponibilidad._');
+
+  const msg = encodeURIComponent(lines.join('\n'));
+  window.open(`https://wa.me/${WA_PHONE}?text=${msg}`, '_blank');
+}
+
+// ─── DRAWER ──────────────────────────────────────────────────────────────────
+function toggleDrawer() {
+  const open = document.getElementById('drawer').classList.contains('open');
+  open ? closeDrawer() : openDrawer();
+}
+function openDrawer()  {
+  renderDrawer();
+  document.getElementById('drawer').classList.add('open');
+  document.getElementById('overlay').classList.add('open');
+}
+function closeDrawer() {
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+}
+
+// ─── TOAST ───────────────────────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+loadData();
+</script>
 </body>
 </html>
