@@ -87,12 +87,13 @@
   .tab {
     font-family: 'Oswald', sans-serif; font-size: .8rem; font-weight: 500;
     padding: 10px 14px; cursor: pointer; white-space: nowrap;
-    color: #999; border: none; background: transparent;
+    color: #ffffff; border: none; background: transparent;
     border-bottom: 3px solid transparent; margin-bottom: -3px;
     transition: color .15s, border-color .15s; letter-spacing: .4px;
+    opacity: .75;
   }
-  .tab:hover { color: var(--blanco); }
-  .tab.active { color: var(--amarillo); border-bottom-color: var(--amarillo); }
+  .tab:hover { color: var(--blanco); opacity: 1; }
+  .tab.active { color: var(--amarillo); border-bottom-color: var(--amarillo); opacity: 1; }
 
   /* ── MAIN ── */
   .main { max-width: 1280px; margin: 0 auto; padding: 20px 18px; }
@@ -104,7 +105,12 @@
   .section-title::after { content: ''; flex: 1; height: 2px; background: linear-gradient(to right, var(--verde), transparent); }
   .product-count { font-size: .8rem; color: #888; font-family: 'Source Sans 3', sans-serif; font-weight: 400; }
 
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 15px; }
+  /* 3 columnas fijas en desktop, 2 en tablet, 1 en móvil estrecho */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
 
   /* ── CARD ── */
   .card {
@@ -115,11 +121,17 @@
   .card:hover { transform: translateY(-3px); box-shadow: 0 8px 26px rgba(0,0,0,.14); }
   .card.in-cart { border-color: var(--verde); }
 
-  .card-img-wrap { position: relative; aspect-ratio: 1/1; background: #f8f8f8; overflow: hidden; }
-  .card-img { width: 100%; height: 100%; object-fit: contain; padding: 8px; transition: transform .3s; }
+  .card-img-wrap { position: relative; aspect-ratio: 4/3; background: #f8f8f8; overflow: hidden; }
+  .card-img { width: 100%; height: 100%; object-fit: contain; padding: 4px; transition: transform .3s; position: relative; z-index: 1; }
   .card:hover .card-img { transform: scale(1.05); }
-  .card-img.err { opacity: 0; }
-  .img-placeholder { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 2.4rem; color: #ccc; }
+  /* La imagen cargada cubre el placeholder. Solo se ve si la img falla (opacity:0) */
+  .card-img.err { opacity: 0; z-index: 0; }
+  .img-placeholder {
+    position: absolute; inset: 0; z-index: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.4rem; color: #ddd;
+    background: #f5f5f5;
+  }
   .cat-badge {
     position: absolute; top: 8px; left: 8px;
     background: var(--naranja); color: var(--blanco);
@@ -278,8 +290,11 @@
   .sk-line.s { width: 50%; }
 
   /* ── RESPONSIVE ── */
-  @media (max-width: 640px) {
-    .grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 11px; }
+  @media (max-width: 900px) {
+    .grid { grid-template-columns: repeat(2, 1fr); gap: 13px; }
+  }
+  @media (max-width: 540px) {
+    .grid { grid-template-columns: 1fr; gap: 11px; }
     .header-inner { padding: 8px 12px; gap: 9px; }
     .search-wrap { order: 3; flex-basis: 100%; }
     .drawer { width: 100%; }
@@ -415,9 +430,11 @@ function renderSkeletons() {
 // TABS
 // ─────────────────────────────────────────────────────────────────────────────
 function buildTabs() {
-  const cats = ['Todos', ...new Set(products.map(p => p['Categoría']))]
-    .sort((a,b) => a === 'Todos' ? -1 : a.localeCompare(b, 'es'));
-  document.getElementById('tabs').innerHTML = cats.map(c => `
+  const cats = ['Todos', ...new Set(products.map(p => p['Categoría']))
+    .values()].filter(c => c !== 'Todos')
+    .sort((a,b) => a.localeCompare(b, 'es'));
+  const allCats = ['Todos', ...cats];
+  document.getElementById('tabs').innerHTML = allCats.map(c => `
     <button class="tab${c === activeTab ? ' active' : ''}"
             onclick="selectTab('${c.replace(/'/g, "\\'")}')">
       ${c === 'Todos' ? '⊞ Todos' : c}
@@ -540,7 +557,11 @@ function renderGrid() {
     return `
     <div class="card${inCart ? ' in-cart' : ''}" id="card-${code}">
       <div class="card-img-wrap">
-        <div class="img-placeholder">🔧</div>
+        <div class="img-placeholder">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.2">
+            <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
+          </svg>
+        </div>
         <img class="card-img" src="${p['Imagen'] || ''}" alt="${p['Nombre']}"
              onerror="this.classList.add('err')" loading="lazy">
         <div class="cat-badge">${p['Categoría']}</div>
