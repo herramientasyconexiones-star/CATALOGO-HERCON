@@ -290,16 +290,49 @@
   .sk-line.s { width: 50%; }
 
   /* ── RESPONSIVE ── */
+  /* Tablet: mantener 3 cols */
   @media (max-width: 900px) {
-    .grid { grid-template-columns: repeat(2, 1fr); gap: 13px; }
+    .grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
   }
-  @media (max-width: 540px) {
-    .grid { grid-template-columns: 1fr; gap: 11px; }
-    .header-inner { padding: 8px 12px; gap: 9px; }
+  /* Móvil: 3 cols compactas – todo cabe en pantalla */
+  @media (max-width: 600px) {
+    .grid { grid-template-columns: repeat(3, 1fr); gap: 5px; }
+    .main { padding: 10px 6px; }
+
+    /* imagen cuadrada, sin padding extra */
+    .card-img-wrap { aspect-ratio: 1/1; }
+    .card-img { padding: 2px; }
+
+    /* tarjeta compacta */
+    .card-body { padding: 4px 5px 6px; }
+    .card-code { font-size: .56rem; margin-bottom: 1px; }
+    .card-name { font-size: .68rem; line-height: 1.2; margin-bottom: 4px; }
+    .cat-badge { font-size: .5rem; padding: 2px 4px; top: 4px; left: 4px; }
+
+    /* precios */
+    .price-table { font-size: .62rem; margin-bottom: 5px; }
+    .price-row { padding: 1px 0; }
+
+    /* cantidad */
+    .qty-btn { width: 24px; height: 26px; font-size: .95rem; }
+    .qty-input { font-size: .78rem; height: 26px; }
+
+    /* botón agregar */
+    .add-btn { font-size: .68rem; padding: 5px 2px; margin-top: 4px; border-radius: 5px; letter-spacing: 0; }
+
+    /* header */
+    .header-inner { padding: 6px 10px; gap: 8px; }
     .search-wrap { order: 3; flex-basis: 100%; }
+    .brand-name { font-size: .85rem; }
+    .brand-sub { font-size: .58rem; letter-spacing: 1px; }
+    .brand-logo { height: 36px; }
+    .cart-btn { padding: 6px 11px; font-size: .85rem; gap: 5px; }
+
+    /* tabs */
+    .tab { font-size: .68rem; padding: 7px 9px; }
+
+    /* drawer */
     .drawer { width: 100%; }
-    .brand-name { font-size: .95rem; }
-    .brand-logo { height: 42px; }
   }
 </style>
 </head>
