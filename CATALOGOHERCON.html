@@ -420,6 +420,79 @@
     .drawer { width: 100%; }
     .section-title { font-size: 1rem; }
   }
+
+  /* ═══════════════════════════════════════
+     FAQ BUTTON
+  ═══════════════════════════════════════ */
+  .faq-btn {
+    cursor: pointer; background: none; border: 1.5px solid rgba(255,255,255,.25);
+    border-radius: 10px; padding: 8px 14px; color: rgba(255,255,255,.8);
+    font-family: inherit; font-size: .82rem; font-weight: 600;
+    display: flex; align-items: center; gap: 6px;
+    transition: background .2s, border-color .2s, color .2s; white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .faq-btn:hover { background: rgba(255,255,255,.1); border-color: rgba(255,255,255,.5); color: #fff; }
+
+  /* ═══════════════════════════════════════
+     FAQ MODAL
+  ═══════════════════════════════════════ */
+  .faq-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,.55);
+    z-index: 300; display: none; align-items: center; justify-content: center;
+    padding: 16px;
+  }
+  .faq-overlay.open { display: flex; }
+  .faq-modal {
+    background: var(--blanco); border-radius: 18px;
+    width: 100%; max-width: 560px; max-height: 88vh;
+    display: flex; flex-direction: column;
+    box-shadow: 0 20px 60px rgba(0,0,0,.25);
+    animation: modalIn .25s cubic-bezier(.4,0,.2,1);
+  }
+  @keyframes modalIn { from { opacity:0; transform:scale(.95) translateY(12px); } to { opacity:1; transform:none; } }
+  .faq-head {
+    background: var(--gris-os); color: #fff;
+    padding: 18px 22px; border-radius: 18px 18px 0 0;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 3px solid var(--verde); flex-shrink: 0;
+  }
+  .faq-head-title { font-size: 1rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+  .faq-close {
+    background: none; border: none; color: #888; font-size: 1.5rem;
+    cursor: pointer; padding: 2px 6px; border-radius: 6px; transition: color .2s; line-height: 1;
+  }
+  .faq-close:hover { color: #fff; }
+  .faq-body { overflow-y: auto; padding: 20px 22px; }
+  .faq-item { margin-bottom: 16px; border: 1.5px solid var(--borde); border-radius: 12px; overflow: hidden; }
+  .faq-q {
+    width: 100%; text-align: left; padding: 14px 16px;
+    background: #f7f8fa; border: none; cursor: pointer;
+    font-family: inherit; font-size: .88rem; font-weight: 700; color: var(--gris-os);
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    transition: background .15s;
+  }
+  .faq-q:hover { background: #eef0f3; }
+  .faq-q .arrow { font-size: .7rem; color: var(--gris-sub); transition: transform .2s; flex-shrink: 0; }
+  .faq-item.open .faq-q { background: var(--gris-os); color: #fff; }
+  .faq-item.open .faq-q .arrow { transform: rotate(180deg); color: var(--amarillo); }
+  .faq-a {
+    padding: 0 16px; max-height: 0; overflow: hidden;
+    font-size: .83rem; color: var(--gris-txt); line-height: 1.65;
+    transition: max-height .3s ease, padding .3s ease;
+  }
+  .faq-item.open .faq-a { max-height: 400px; padding: 14px 16px; }
+  .faq-footer {
+    padding: 16px 22px; border-top: 1px solid var(--borde);
+    text-align: center; font-size: .8rem; color: var(--gris-sub);
+    flex-shrink: 0;
+  }
+  .faq-footer a { color: var(--naranja); font-weight: 600; text-decoration: none; }
+  .faq-footer a:hover { text-decoration: underline; }
+  @media (max-width: 600px) {
+    .faq-btn span { display: none; }
+    .faq-btn { padding: 8px 10px; }
+  }
 </style>
 </head>
 <body>
@@ -438,6 +511,10 @@
         <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <input type="text" id="searchInput" placeholder="Buscar por nombre o código…" autocomplete="off">
       </div>
+      <button class="faq-btn" onclick="openFaq()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <span>Preguntas Frecuentes</span>
+      </button>
       <button class="cart-btn" onclick="openDrawer()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
         Mi Pedido
@@ -485,6 +562,26 @@
       Seguir Comprando
     </button>
     <button class="clear-btn" onclick="clearCart()">🗑 Limpiar pedido</button>
+  </div>
+</div>
+
+
+<!-- FAQ Modal -->
+<div class="faq-overlay" id="faqOverlay" onclick="closeFaqOutside(event)">
+  <div class="faq-modal" id="faqModal">
+    <div class="faq-head">
+      <div class="faq-head-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        Preguntas Frecuentes
+      </div>
+      <button class="faq-close" onclick="closeFaq()">×</button>
+    </div>
+    <div class="faq-body" id="faqBody"></div>
+    <div class="faq-footer">
+      ¿Más dudas? Escríbenos a
+      <a href="https://wa.me/527731511890" target="_blank">WhatsApp</a> o visita
+      <a href="https://www.herramientasyconexiones.com/" target="_blank">herramientasyconexiones.com</a>
+    </div>
   </div>
 </div>
 
@@ -598,6 +695,13 @@ function selectTab(cat) {
   document.querySelectorAll('.tab').forEach(t =>
     t.classList.toggle('active', t.textContent.trim().replace('⊞ ','') === cat));
   renderGrid();
+  // Volver al inicio de los productos al cambiar categoría
+  const main = document.querySelector('.main');
+  if (main) {
+    const stickyH = document.querySelector('.sticky-top')?.offsetHeight || 0;
+    const top = main.getBoundingClientRect().top + window.scrollY - stickyH - 8;
+    window.scrollTo({ top, behavior: 'smooth' });
+  }
 }
 
 // ─── SEARCH ───────────────────────────────────────────────────────────────────
@@ -870,6 +974,84 @@ function showToast(msg) {
   t.textContent = msg; t.classList.add('show');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+
+// ─── FAQ ──────────────────────────────────────────────────────────────────────
+const FAQ_ITEMS = [
+  {
+    q: '¿Cómo hago mi pedido?',
+    a: 'Navega por las categorías o usa el buscador para encontrar los productos que necesitas. Ajusta la cantidad con los botones + / − o escríbela directamente, luego presiona "Agregar al pedido". Cuando termines, abre "Mi Pedido" y toca "Enviar Pedido por WhatsApp" para mandarnos tu lista.'
+  },
+  {
+    q: '¿Los precios incluyen IVA?',
+    a: 'Los precios mostrados en el catálogo no incluyen IVA. Al momento de generar tu factura se agregará el impuesto correspondiente. Si tienes dudas sobre el precio final contáctanos por WhatsApp.'
+  },
+  {
+    q: '¿Cuál es el pedido mínimo?',
+    a: 'No tenemos pedido mínimo en cantidad de productos; sin embargo, para acceder a los precios de mayoreo debes cumplir con el rango de cantidad indicado en cada artículo (por ejemplo: "6 o más").'
+  },
+  {
+    q: '¿Cómo funcionan los rangos de precio?',
+    a: 'Cada producto muestra hasta 3 rangos de precio según la cantidad que pidas. Al agregar un producto al carrito, la app aplica automáticamente el mejor precio según la cantidad que indicaste. Por ejemplo: si el producto dice "1–5: $60" y "6 o más: $55" y pides 10 piezas, se aplicará $55 por pieza.'
+  },
+  {
+    q: '¿Cuánto tiempo tarda mi pedido en llegar?',
+    a: 'Los tiempos de entrega dependen de tu ubicación y la disponibilidad del producto. Generalmente los pedidos dentro de la ciudad se entregan en 1–2 días hábiles. Para pedidos foráneos, te avisaremos el tiempo estimado al confirmar tu pedido.'
+  },
+  {
+    q: '¿Cómo puedo pagar?',
+    a: 'Aceptamos pago en efectivo, transferencia bancaria y depósito. Al confirmar tu pedido por WhatsApp te proporcionaremos los datos de pago correspondientes.'
+  },
+  {
+    q: '¿Puedo cancelar o modificar mi pedido?',
+    a: 'Sí, puedes modificar tu pedido mientras no haya sido procesado. Contáctanos lo antes posible por WhatsApp indicando los cambios que necesitas.'
+  },
+  {
+    q: '¿Los precios se actualizan seguido?',
+    a: 'El catálogo se actualiza semanalmente. Te recomendamos recargar la página antes de hacer tu pedido para ver los precios más recientes.'
+  },
+  {
+    q: '¿Tienen catálogo físico o solo digital?',
+    a: 'Actualmente manejamos únicamente este catálogo digital, el cual puedes consultar desde cualquier dispositivo. Se actualiza cada semana con nuevos productos y precios.'
+  },
+  {
+    q: '¿Qué hago si un producto no aparece en el catálogo?',
+    a: 'Si no encuentras el producto que buscas, escríbenos directamente por WhatsApp. Contamos con una amplia gama de productos que podría no estar aún en el catálogo digital.'
+  },
+];
+
+function buildFaq() {
+  document.getElementById('faqBody').innerHTML = FAQ_ITEMS.map((item, i) => `
+    <div class="faq-item" id="faq-${i}">
+      <button class="faq-q" onclick="toggleFaq(${i})">
+        <span>${item.q}</span>
+        <span class="arrow">▼</span>
+      </button>
+      <div class="faq-a">${item.a}</div>
+    </div>`).join('');
+}
+
+function toggleFaq(i) {
+  const el = document.getElementById('faq-' + i);
+  const isOpen = el.classList.contains('open');
+  // Cerrar todos
+  document.querySelectorAll('.faq-item').forEach(e => e.classList.remove('open'));
+  // Abrir el seleccionado si estaba cerrado
+  if (!isOpen) el.classList.add('open');
+}
+
+function openFaq() {
+  buildFaq();
+  document.getElementById('faqOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeFaq() {
+  document.getElementById('faqOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function closeFaqOutside(e) {
+  if (e.target === document.getElementById('faqOverlay')) closeFaq();
 }
 
 loadData();
