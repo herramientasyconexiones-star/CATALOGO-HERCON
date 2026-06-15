@@ -954,10 +954,11 @@ function sendWhatsApp() {
   let lines = ['📋 *PEDIDO – Herramientas y Conexiones*\n'], grand = 0;
   items.forEach(({product:p, qty}) => {
     const u = getBestPrice(p,qty), sub = u*qty; grand += sub;
-    lines.push(`• *${p['Nombre']}* (Cód: ${p['Código']})\n  Cant: ${qty} × $${u.toFixed(2)} = $${sub.toFixed(2)}`);
+    // Formato: Cód | *CANT pzas* | descripción pequeña | precio×cant=total
+    lines.push(`${p['Código']} | *${qty} pzas* | _${p['Nombre']}_ | $${u.toFixed(2)} × ${qty} = *$${sub.toFixed(2)}*`);
   });
-  lines.push(`\n💰 *Total estimado: $${grand.toFixed(2)}*`);
-  lines.push('\n_Precios sujetos a cambio y disponibilidad._');
+  lines.push(`\n💰 *TOTAL ESTIMADO: $${grand.toFixed(2)}*`);
+  lines.push('_Precios sujetos a cambio y disponibilidad._');
   window.open(`https://wa.me/${WA_PHONE}?text=${encodeURIComponent(lines.join('\n'))}`, '_blank');
 }
 
