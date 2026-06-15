@@ -978,44 +978,48 @@ function showToast(msg) {
 // ─── FAQ ──────────────────────────────────────────────────────────────────────
 const FAQ_ITEMS = [
   {
-    q: '¿Cómo hago mi pedido?',
-    a: 'Navega por las categorías o usa el buscador para encontrar los productos que necesitas. Ajusta la cantidad con los botones + / − o escríbela directamente, luego presiona "Agregar al pedido". Cuando termines, abre "Mi Pedido" y toca "Enviar Pedido por WhatsApp" para mandarnos tu lista.'
+    q: '¿Cuál es la compra mínima?',
+    a: 'La compra mínima es de $2,500 pesos 💸 por pedido. La ventaja de comprar con nosotros es que no te pedimos una cantidad de piezas por producto — puedes ARMAR TU PEDIDO COMO QUIERAS CON LAS PIEZAS QUE QUIERAS, siempre y cuando cumplas la compra mínima. Además, cada producto tiene hasta tres precios diferentes: EL PRECIO VA BAJANDO SI COMPRAS MÁS PIEZAS, lo que te da mayor utilidad. 💲💲💲'
   },
   {
-    q: '¿Los precios incluyen IVA?',
-    a: 'Los precios mostrados en el catálogo no incluyen IVA. Al momento de generar tu factura se agregará el impuesto correspondiente. Si tienes dudas sobre el precio final contáctanos por WhatsApp.'
+    q: '¿Cómo hago un pedido?',
+    a: 'Es muy sencillo 😎. Puedes hacerlo a través de esta página, por WhatsApp o vía telefónica al 7737347895. Una vez que tengamos tu pedido, revisaremos las existencias en nuestro almacén y te enviaremos una cotización (que incluye el costo de envío) para que la autorices. Si estás de acuerdo, realizas el pago y tu pedido será enviado en las siguientes 24 horas con guía de rastreo.'
   },
   {
-    q: '¿Cuál es el pedido mínimo?',
-    a: 'No tenemos pedido mínimo en cantidad de productos; sin embargo, para acceder a los precios de mayoreo debes cumplir con el rango de cantidad indicado en cada artículo (por ejemplo: "6 o más").'
+    q: '¿Cómo funciona el envío?',
+    a: 'Enviamos a TODA LA REPÚBLICA 🚛. A una caja grande le caben aproximadamente $3,200–$3,500 pesos en mercancía (máx. 25 kg y sin exceder el volumen de una caja de vasos desechables). Los costos de envío por caja son: $208.50 para compras de $2,500–$4,999 | $178.70 para $5,000–$9,999 | $158.90 para $10,000 en adelante. Se puede enviar a domicilio o a ocurre, siempre que la paquetería tenga cobertura.'
   },
   {
-    q: '¿Cómo funcionan los rangos de precio?',
-    a: 'Cada producto muestra hasta 3 rangos de precio según la cantidad que pidas. Al agregar un producto al carrito, la app aplica automáticamente el mejor precio según la cantidad que indicaste. Por ejemplo: si el producto dice "1–5: $60" y "6 o más: $55" y pides 10 piezas, se aplicará $55 por pieza.'
+    q: '¿Dónde están ubicados?',
+    a: 'Estamos ubicados en: Libramiento Norponiente S/N, Esquina con Blvd. Peñaflor, Conjunto Empresarial Europark 3, Bodega 11, Querétaro, Qro. C.P. 76116. 📍 Ver en Google Maps: https://maps.app.goo.gl/DoMuNBH7vnRsMSE76'
   },
   {
-    q: '¿Cuánto tiempo tarda mi pedido en llegar?',
-    a: 'Los tiempos de entrega dependen de tu ubicación y la disponibilidad del producto. Generalmente los pedidos dentro de la ciudad se entregan en 1–2 días hábiles. Para pedidos foráneos, te avisaremos el tiempo estimado al confirmar tu pedido.'
+    q: '¿Puedo ir a su bodega?',
+    a: '¡Claro que sí! Pero considera que el 98% de nuestros clientes son foráneos — tenemos clientes desde Chihuahua hasta Chiapas. Somos una bodega, no una tienda: no tenemos mostradores, vitrinas ni sala de exhibición. Con mucho gusto te podemos mostrar los productos estrella o los que quieras conocer.'
   },
   {
-    q: '¿Cómo puedo pagar?',
-    a: 'Aceptamos pago en efectivo, transferencia bancaria y depósito. Al confirmar tu pedido por WhatsApp te proporcionaremos los datos de pago correspondientes.'
+    q: '¿Puedo enviar a alguien a recoger mi pedido?',
+    a: 'Claro que sí. Para entregar el producto debe estar pagado. Solo pediremos a quien recoja una identificación para confirmar que es la persona que nos indicaste. También puede pagar al recoger.'
   },
   {
-    q: '¿Puedo cancelar o modificar mi pedido?',
-    a: 'Sí, puedes modificar tu pedido mientras no haya sido procesado. Contáctanos lo antes posible por WhatsApp indicando los cambios que necesitas.'
+    q: '¿Cuáles son sus horarios?',
+    a: 'Trabajamos de lunes a viernes de 8:00 a 17:30 hrs y sábados de 8:00 a 12:30 hrs.'
   },
   {
-    q: '¿Los precios se actualizan seguido?',
-    a: 'El catálogo se actualiza semanalmente. Te recomendamos recargar la página antes de hacer tu pedido para ver los precios más recientes.'
+    q: '¿Qué formas de pago aceptan?',
+    a: 'Contamos con dos cuentas fiscales: Banorte y Banco Azteca. Ambas aceptan transferencia, depósito directo en ventanilla o en establecimientos como Bodega Aurrerá, Farmacias Guadalajara, del Ahorro, Chedraui, 7-Eleven, entre otros. No manejamos pago contra entrega.'
   },
   {
-    q: '¿Tienen catálogo físico o solo digital?',
-    a: 'Actualmente manejamos únicamente este catálogo digital, el cual puedes consultar desde cualquier dispositivo. Se actualiza cada semana con nuevos productos y precios.'
+    q: '¿Necesito factura? ¿Los precios incluyen IVA?',
+    a: 'Nuestros precios ya incluyen IVA. Si no estás dado de alta en el SAT, podemos trabajar con remisión. Si en el futuro te das de alta, podemos facturar a los mismos precios del catálogo.'
   },
   {
-    q: '¿Qué hago si un producto no aparece en el catálogo?',
-    a: 'Si no encuentras el producto que buscas, escríbenos directamente por WhatsApp. Contamos con una amplia gama de productos que podría no estar aún en el catálogo digital.'
+    q: '¿Manejan garantías?',
+    a: 'En productos electrónicos y eléctricos no manejamos garantía. En todos los demás productos, la garantía aplica únicamente por defecto de fábrica. Puedes consultar más detalles en nuestra página web.'
+  },
+  {
+    q: '¿Qué marcas trabajan?',
+    a: 'Somos multimarcas. Trabajamos con Goodwill, Latintul, Fumetax, Solvex, Megaluz, Wanergy, Hammermex, Fontein, Kola Loka, Norma y proveedores nacionales, entre muchas otras marcas.'
   },
 ];
 
