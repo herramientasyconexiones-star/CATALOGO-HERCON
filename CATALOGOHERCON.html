@@ -588,7 +588,7 @@
 <script>
 // ─── CONFIG ──────────────────────────────────────────────────────────────────
 const DATA_URL = 'basedeprecios.json';
-const WA_PHONE = '527737347895';
+const WA_PHONE = '527731511890';
 
 // ─── ESTADO ──────────────────────────────────────────────────────────────────
 let products   = [];
@@ -728,7 +728,7 @@ function saveVisibleInputs() {
 function filteredProducts() {
   if (searchTerm) return products.filter(p =>
     p['Nombre'].toLowerCase().includes(searchTerm) ||
-    String(p['Código']).includes(searchTerm));
+    String(p['Código']).toLowerCase().includes(searchTerm));
   return activeTab === 'Todos' ? products
     : products.filter(p => p['Categoría'] === activeTab);
 }
