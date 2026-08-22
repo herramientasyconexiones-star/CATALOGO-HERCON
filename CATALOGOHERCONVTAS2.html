@@ -492,6 +492,48 @@
   @media (max-width: 600px) {
     .faq-btn { padding: 7px 11px; font-size: .78rem; }
   }
+
+  /* ═══════════════════════════════════════
+     MASCOTA FLOTANTE (GIF animado)
+  ═══════════════════════════════════════ */
+  .mascot-wrap {
+    position: fixed; bottom: 18px; right: 18px; z-index: 150;
+    display: flex; align-items: flex-end; gap: 8px;
+    opacity: 0; pointer-events: none;
+    transform: translateY(24px) scale(.85);
+    transition: opacity .35s ease, transform .35s cubic-bezier(.34,1.56,.64,1);
+  }
+  .mascot-wrap.show { opacity: 1; pointer-events: auto; transform: translateY(0) scale(1); }
+  .mascot-char {
+    width: 36vw; height: 36vw; min-width: 280px; min-height: 280px;
+    max-width: 440px; max-height: 440px; object-fit: contain;
+    cursor: pointer; user-select: none;
+    filter: drop-shadow(0 4px 10px rgba(0,0,0,.28));
+  }
+  .mascot-bubble {
+    background: #fff; color: var(--gris-os);
+    border: 2px solid var(--verde); border-radius: 14px;
+    padding: 9px 13px; margin-bottom: 10px;
+    font-size: .78rem; font-weight: 600; line-height: 1.35;
+    max-width: 200px; box-shadow: var(--shadow);
+    position: relative; cursor: pointer;
+  }
+  .mascot-bubble::after {
+    content: ''; position: absolute; bottom: -9px; right: 20px;
+    width: 0; height: 0;
+    border: 9px solid transparent; border-top-color: var(--verde);
+  }
+  .mascot-bubble::before {
+    content: ''; position: absolute; bottom: -6px; right: 22px;
+    width: 0; height: 0;
+    border: 7px solid transparent; border-top-color: #fff; z-index: 1;
+  }
+  @media (max-width: 600px) {
+    .mascot-char { width: 66vw; height: 66vw; min-width: 0; max-width: none; max-height: none; }
+    .mascot-bubble { max-width: 60vw; font-size: .85rem; }
+    .mascot-bubble { font-size: .7rem; max-width: 150px; padding: 7px 10px; margin-bottom: 8px; }
+    .mascot-wrap { bottom: 12px; right: 10px; }
+  }
 </style>
 </head>
 <body>
@@ -584,6 +626,14 @@
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- Mascota flotante (GIF animado) -->
+<div class="mascot-wrap" id="mascotWrap" onclick="hideMascotNow()">
+  <div class="mascot-bubble" id="mascotBubble"></div>
+  <img class="mascot-char" id="mascotGif"
+       src="https://media.tenor.com/mv6s_HiJ1pYAAAAj/adoptinga-best-friend-eu.gif"
+       alt="Mascota">
+</div>
 
 <script>
 // ─── CONFIG ──────────────────────────────────────────────────────────────────
@@ -1056,6 +1106,52 @@ function closeFaq() {
 function closeFaqOutside(e) {
   if (e.target === document.getElementById('faqOverlay')) closeFaq();
 }
+
+// ─── MASCOTA FLOTANTE (GIF animado) ────────────────────────────────────────────
+const MASCOT_MESSAGES = [
+  '¡Sigue viendo! Tenemos muchos productos para ti 🛠️',
+  'Más adelante encontrarás grandes ofertas 🔥',
+  '¿Ya viste nuestra sección de herramientas? 🔧',
+  'Entre más compras, más barato te sale cada pieza 📉',
+  'Arma tu pedido como quieras, sin mínimo por producto 😉',
+  '¿Buscas algo en especial? Usa la barra de búsqueda 🔍',
+  '¡Hacemos envíos a toda la República! 🚛',
+  'Recuerda: compra mínima de $2,500 por pedido 💸',
+  'Explora todas las categorías, hay mucho por descubrir 👀',
+  '¿Dudas? Toca el botón "¿Dudas?" arriba y te ayudamos 💬',
+];
+
+function mascotRand(min, max) { return Math.random() * (max - min) + min; }
+
+function showMascot() {
+  // No molestar si el carrito o el FAQ están abiertos
+  const drawerOpen = document.getElementById('drawer')?.classList.contains('open');
+  const faqOpen    = document.getElementById('faqOverlay')?.classList.contains('open');
+  if (drawerOpen || faqOpen) { scheduleMascot(); return; }
+
+  const msg = MASCOT_MESSAGES[Math.floor(Math.random() * MASCOT_MESSAGES.length)];
+  document.getElementById('mascotBubble').textContent = msg;
+
+  const wrap = document.getElementById('mascotWrap');
+  wrap.classList.add('show');
+
+  const visibleTime = mascotRand(4500, 7000); // cuánto tiempo se queda visible
+  setTimeout(() => {
+    wrap.classList.remove('show');
+    scheduleMascot();
+  }, visibleTime);
+}
+
+function hideMascotNow() {
+  document.getElementById('mascotWrap').classList.remove('show');
+}
+
+function scheduleMascot() {
+  const delay = mascotRand(20000, 45000); // 20–45s entre apariciones (ajusta a gusto)
+  setTimeout(showMascot, delay);
+}
+
+scheduleMascot(); // inicia el ciclo
 
 loadData();
 </script>
