@@ -1155,6 +1155,7 @@ scheduleMascot(); // inicia el ciclo
 
 loadData();
 </script>
+<script src="navidad.js"></script>
 </body>
 </html>
 
